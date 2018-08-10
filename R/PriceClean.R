@@ -79,25 +79,44 @@ rsa_price_final = rsa_price_final %>% select(date,rsa_price)
 # adjust by exchange rate 
 ##################################################################
 
+ex= read.csv("data/ExchangeRate.csv")
+colnames(ex) = c("DATE","rand_per_kwa")
+#  from  daily exchange rate to monthly (average)
+ex$date = as.Date (ex$DATE,"%m/%d/%Y")
+ex$yearmon = substring(ex$date,1,7)
 
+# before 2013,unit is in 1000
+ adjust = ex[ex$date <"2013-01-01",]
+ adjust$rand_per_kwa = adjust$rand_per_kwa/1000
+
+ later =  ex[ex$date > "2013-01-01",]
+ 
+ full = bind_rows(adjust,later)
+  
+ as = full %>% group_by(yearmon) %>% select(rand_per_kwa) %>%  summarise(mean_ex= mean(rand_per_kwa))
 
 # adjust to kg from ton by diving 1000
 rsa_price_final$rsa_price = rsa_price_final$rsa_price/1000
 
+rsa_price_final$yearmon = substring(rsa_price_final$date,1,7)
+rsa_price_final = left_join(rsa_price_final,as,by = "yearmon")
+rsa_price_final$rsa_price_kwa = rsa_price_final$rsa_price * rsa_price_final$mean_ex
 
+rsa_price_kwacha = rsa_price_final %>% select(date,rsa_price_kwa)
 ###################################################################
 # adjust by 
 ##################################################################
 
 # combine into one df
 
-Price = left_join(zam_price_final,rsa_price_final,by = "date")
+Price = left_join(zam_price_final,rsa_price_kwacha,by = "date")
 
 # plot the two prices 
  
-ggplot(data = Price, aes(x = date)) + geom_point(aes(y = rsa_price)) + geom_line(aes(y = zam_price))
+ggplot(data = Price, aes(x = date)) + geom_line(aes(y = rsa_price_kwa),color="blue") + geom_line(aes(y = zam_price),color="red")+ theme(legend.position = "right")
 
-
+require("forecast")
+require("vars")
 
 # weather data 
 
