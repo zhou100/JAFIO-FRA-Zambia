@@ -8,7 +8,16 @@
     <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="memory_20180927115013999" name="Clipped">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer expanded="1" checked="Qt::Checked" id="district_cropland20180927115540858" name="district_cropland">
+    <layer-tree-layer expanded="1" checked="Qt::Checked" id="memory_20180927174048504" name="Joined layer">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="memory_20180927173514347" name="Centroids">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="memory_20180927173848034" name="Random points">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="district_cropland20180927115540858" name="district_cropland">
       <customproperties/>
     </layer-tree-layer>
     <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="project_district_zambia20180927112642643" name="project_district_zambia">
@@ -22,10 +31,10 @@
   <mapcanvas>
     <units>degrees</units>
     <extent>
-      <xmin>40.42835047471702126</xmin>
-      <ymin>-25.71078381514875133</ymin>
-      <xmax>81.75918995139754486</xmax>
-      <ymax>-1.86470188148354765</ymax>
+      <xmin>48.34959318920915905</xmin>
+      <ymin>-16.9350448506015141</ymin>
+      <xmax>61.77327249712003265</xmax>
+      <ymax>-7.3369903789144848</ymax>
     </extent>
     <rotation>0</rotation>
     <projections>1</projections>
@@ -43,22 +52,27 @@
     </destinationsrs>
     <rendermaptile>0</rendermaptile>
     <layer_coordinate_transform_info>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="USER:100002" srcDatumTransform="-1" destDatumTransform="-1" layerid="clipped_zambia_crop20180927113836199"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="USER:100002" srcDatumTransform="-1" destDatumTransform="-1" layerid="s20180927113921492"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="project_district_zambia20180927112642643"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="zmb_popa_adm2_census2010f_ISCGM_CSO_OCHA_20180927111823946"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927115013999"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927112605156"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927115152774"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="district_cropland20180927115540858"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="USER:100002" srcDatumTransform="-1" destDatumTransform="-1" layerid="project_district_zambia20180927112202246"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="s20180927114344944"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="cropland_country20180927111555048"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927112235617"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="zmb_popa_adm2_census2010f_ISCGM_CSO_OCHA_20180927112500931"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927174048504"/>
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927113806763"/>
-      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="f20180927114041809"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927115013999"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="district_cropland20180927115540858"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927173514347"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927112605156"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927173548154"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927173637089"/>
       <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="zmb_popa_adm2_census2010f_ISCGM_CSO_OCHA_20180927114139070"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="zmb_popa_adm2_census2010f_ISCGM_CSO_OCHA_20180927111823946"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927173848034"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="cropland_country20180927111555048"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="s20180927114344944"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="zmb_popa_adm2_census2010f_ISCGM_CSO_OCHA_20180927112500931"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="f20180927114041809"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="USER:100002" srcDatumTransform="-1" destDatumTransform="-1" layerid="clipped_zambia_crop20180927113836199"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927115152774"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="USER:100002" srcDatumTransform="-1" destDatumTransform="-1" layerid="s20180927113921492"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="USER:100002" srcDatumTransform="-1" destDatumTransform="-1" layerid="project_district_zambia20180927112202246"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:102022" srcDatumTransform="-1" destDatumTransform="-1" layerid="project_district_zambia20180927112642643"/>
+      <layer_coordinate_transform destAuthId="EPSG:4326" srcAuthId="EPSG:4326" srcDatumTransform="-1" destDatumTransform="-1" layerid="memory_20180927112235617"/>
     </layer_coordinate_transform_info>
   </mapcanvas>
   <layer-tree-canvas>
@@ -67,6 +81,9 @@
       <item>project_district_zambia20180927112642643</item>
       <item>memory_20180927115013999</item>
       <item>district_cropland20180927115540858</item>
+      <item>memory_20180927173514347</item>
+      <item>memory_20180927173848034</item>
+      <item>memory_20180927174048504</item>
     </custom-order>
   </layer-tree-canvas>
   <legend updateDrawingOrder="true">
@@ -75,9 +92,24 @@
         <legendlayerfile isInOverview="0" layerid="memory_20180927115013999" visible="0"/>
       </filegroup>
     </legendlayer>
-    <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="district_cropland" showFeatureCount="0">
+    <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="Joined layer" showFeatureCount="0">
       <filegroup open="true" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="district_cropland20180927115540858" visible="1"/>
+        <legendlayerfile isInOverview="0" layerid="memory_20180927174048504" visible="1"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="Centroids" showFeatureCount="0">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile isInOverview="0" layerid="memory_20180927173514347" visible="0"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="Random points" showFeatureCount="0">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile isInOverview="0" layerid="memory_20180927173848034" visible="0"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="district_cropland" showFeatureCount="0">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile isInOverview="0" layerid="district_cropland20180927115540858" visible="0"/>
       </filegroup>
     </legendlayer>
     <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="project_district_zambia" showFeatureCount="0">
@@ -100,7 +132,7 @@
         <ymax>5245254.23150000162422657</ymax>
       </extent>
       <id>cropland_country20180927111555048</id>
-      <datasource>/Users/yujunzhou/Box Sync/Research/ZambiaPrice/data/weather/cropland_sage/cropland_country.shp</datasource>
+      <datasource>./cropland_sage/cropland_country.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -205,7 +237,7 @@
         <multilineenabled fieldname="" on=""/>
         <selectedonly on=""/>
       </labelattributes>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <aliases>
         <alias field="ISO3V10" index="0" name=""/>
         <alias field="Shape_Leng" index="1" name=""/>
@@ -221,10 +253,10 @@
       <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="1936877894">
         <columns/>
       </attributetableconfig>
-      <editform></editform>
+      <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
-      <editforminitfilepath></editforminitfilepath>
+      <editforminitfilepath>.</editforminitfilepath>
       <editforminitcode><![CDATA[]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
@@ -236,7 +268,7 @@
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" readOnly="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>district_cropland20180927115540858</id>
-      <datasource>/Users/yujunzhou/Box Sync/Research/ZambiaPrice/data/clean/district_cropland.shp</datasource>
+      <datasource>../clean/district_cropland.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -254,7 +286,7 @@
         </spatialrefsys>
       </srs>
       <provider encoding="System">ogr</provider>
-      <previewExpression></previewExpression>
+      <previewExpression>COALESCE( "ID_statoid", '&lt;NULL>' )</previewExpression>
       <vectorjoins/>
       <layerDependencies/>
       <expressionfields/>
@@ -401,7 +433,7 @@
         <multilineenabled fieldname="" on=""/>
         <selectedonly on=""/>
       </labelattributes>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <aliases>
         <alias field="Country" index="0" name=""/>
         <alias field="Province" index="1" name=""/>
@@ -430,12 +462,36 @@
       <excludeAttributesWFS/>
       <attributeactions default="-1"/>
       <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
-        <columns/>
+        <columns>
+          <column width="-1" hidden="0" type="field" name="Country"/>
+          <column width="-1" hidden="0" type="field" name="Province"/>
+          <column width="-1" hidden="0" type="field" name="Prov_code"/>
+          <column width="-1" hidden="0" type="field" name="District_n"/>
+          <column width="-1" hidden="0" type="field" name="Dist_iaa"/>
+          <column width="-1" hidden="0" type="field" name="Pcode_CSO"/>
+          <column width="-1" hidden="0" type="field" name="Dist_code"/>
+          <column width="-1" hidden="0" type="field" name="HASC_code"/>
+          <column width="-1" hidden="0" type="field" name="ID_statoid"/>
+          <column width="-1" hidden="0" type="field" name="Pop2010"/>
+          <column width="-1" hidden="0" type="field" name="Male10"/>
+          <column width="-1" hidden="0" type="field" name="Female10"/>
+          <column width="-1" hidden="0" type="field" name="Source"/>
+          <column width="-1" hidden="0" type="field" name="Shape_Leng"/>
+          <column width="-1" hidden="0" type="field" name="Shape_Area"/>
+          <column width="-1" hidden="0" type="field" name="ISO3V10"/>
+          <column width="-1" hidden="0" type="field" name="shape_le_1"/>
+          <column width="-1" hidden="0" type="field" name="ID"/>
+          <column width="-1" hidden="0" type="field" name="Unsdcode"/>
+          <column width="-1" hidden="0" type="field" name="Countryeng"/>
+          <column width="-1" hidden="0" type="field" name="Shape_Le_2"/>
+          <column width="-1" hidden="0" type="field" name="shape_ar_1"/>
+          <column width="-1" hidden="1" type="actions"/>
+        </columns>
       </attributetableconfig>
-      <editform></editform>
+      <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
-      <editforminitfilepath></editforminitfilepath>
+      <editforminitfilepath>.</editforminitfilepath>
       <editforminitcode><![CDATA[]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
@@ -552,7 +608,7 @@
         <multilineenabled fieldname="" on=""/>
         <selectedonly on=""/>
       </labelattributes>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <aliases>
         <alias field="ISO3V10" index="0" name=""/>
         <alias field="Shape_Leng" index="1" name=""/>
@@ -567,6 +623,594 @@
       <attributeactions default="-1"/>
       <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="924267078">
         <columns/>
+      </attributetableconfig>
+      <editform>.</editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath>.</editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <widgets/>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+    </maplayer>
+    <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" readOnly="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
+      <id>memory_20180927173514347</id>
+      <datasource>memory?geometry=Point&amp;crs=EPSG:102022&amp;field=Country:string(255,0)&amp;field=Province:string(255,0)&amp;field=Prov_code:string(255,0)&amp;field=District_n:string(255,0)&amp;field=Dist_iaa:string(255,0)&amp;field=Pcode_CSO:string(255,0)&amp;field=Dist_code:string(255,0)&amp;field=HASC_code:string(255,0)&amp;field=ID_statoid:double(20,5)&amp;field=Pop2010:double(20,5)&amp;field=Male10:double(20,5)&amp;field=Female10:double(20,5)&amp;field=Source:string(255,0)&amp;field=Shape_Leng:double(20,5)&amp;field=Shape_Area:double(20,5)&amp;field=ISO3V10:string(255,0)&amp;field=shape_le_1:double(20,5)&amp;field=ID:string(255,0)&amp;field=Unsdcode:string(255,0)&amp;field=Countryeng:string(255,0)&amp;field=Shape_Le_2:double(20,5)&amp;field=shape_ar_1:double(20,5)</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>Centroids</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=aea +lat_1=20 +lat_2=-23 +lat_0=0 +lon_0=25 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</proj4>
+          <srsid>27145</srsid>
+          <srid>102022</srid>
+          <authid>EPSG:102022</authid>
+          <description>Africa_Albers_Equal_Area_Conic</description>
+          <projectionacronym>aea</projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <provider encoding="System">memory</provider>
+      <previewExpression></previewExpression>
+      <vectorjoins/>
+      <layerDependencies/>
+      <expressionfields/>
+      <defaults>
+        <default field="Country" expression=""/>
+        <default field="Province" expression=""/>
+        <default field="Prov_code" expression=""/>
+        <default field="District_n" expression=""/>
+        <default field="Dist_iaa" expression=""/>
+        <default field="Pcode_CSO" expression=""/>
+        <default field="Dist_code" expression=""/>
+        <default field="HASC_code" expression=""/>
+        <default field="ID_statoid" expression=""/>
+        <default field="Pop2010" expression=""/>
+        <default field="Male10" expression=""/>
+        <default field="Female10" expression=""/>
+        <default field="Source" expression=""/>
+        <default field="Shape_Leng" expression=""/>
+        <default field="Shape_Area" expression=""/>
+        <default field="ISO3V10" expression=""/>
+        <default field="shape_le_1" expression=""/>
+        <default field="ID" expression=""/>
+        <default field="Unsdcode" expression=""/>
+        <default field="Countryeng" expression=""/>
+        <default field="Shape_Le_2" expression=""/>
+        <default field="shape_ar_1" expression=""/>
+      </defaults>
+      <map-layer-style-manager current="">
+        <map-layer-style name=""/>
+      </map-layer-style-manager>
+      <edittypes>
+        <edittype widgetv2type="TextEdit" name="Country">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Province">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Prov_code">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="District_n">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Dist_iaa">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Pcode_CSO">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Dist_code">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="HASC_code">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="ID_statoid">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Pop2010">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Male10">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Female10">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Source">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Shape_Leng">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Shape_Area">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="ISO3V10">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="shape_le_1">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="ID">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Unsdcode">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Countryeng">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Shape_Le_2">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="shape_ar_1">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+      </edittypes>
+      <renderer-v2 forceraster="0" symbollevels="0" type="singleSymbol" enableorderby="0">
+        <symbols>
+          <symbol alpha="1" clip_to_extent="1" type="marker" name="0">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="83,179,10,255"/>
+              <prop k="horizontal_anchor_point" v="1"/>
+              <prop k="joinstyle" v="bevel"/>
+              <prop k="name" v="circle"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_color" v="0,0,0,255"/>
+              <prop k="outline_style" v="solid"/>
+              <prop k="outline_width" v="0"/>
+              <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="diameter"/>
+              <prop k="size" v="2"/>
+              <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+              <prop k="size_unit" v="MM"/>
+              <prop k="vertical_anchor_point" v="1"/>
+            </layer>
+          </symbol>
+        </symbols>
+        <rotation/>
+        <sizescale scalemethod="diameter"/>
+      </renderer-v2>
+      <labeling type="simple"/>
+      <customproperties/>
+      <blendMode>0</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerTransparency>0</layerTransparency>
+      <displayfield>ID_statoid</displayfield>
+      <label>0</label>
+      <labelattributes>
+        <label fieldname="" text="Label"/>
+        <family fieldname="" name=".SF NS Text"/>
+        <size fieldname="" units="pt" value="12"/>
+        <bold fieldname="" on="0"/>
+        <italic fieldname="" on="0"/>
+        <underline fieldname="" on="0"/>
+        <strikeout fieldname="" on="0"/>
+        <color fieldname="" red="0" blue="0" green="0"/>
+        <x fieldname=""/>
+        <y fieldname=""/>
+        <offset x="0" y="0" units="pt" yfieldname="" xfieldname=""/>
+        <angle fieldname="" value="0" auto="0"/>
+        <alignment fieldname="" value="center"/>
+        <buffercolor fieldname="" red="255" blue="255" green="255"/>
+        <buffersize fieldname="" units="pt" value="1"/>
+        <bufferenabled fieldname="" on=""/>
+        <multilineenabled fieldname="" on=""/>
+        <selectedonly on=""/>
+      </labelattributes>
+      <annotationform></annotationform>
+      <aliases>
+        <alias field="Country" index="0" name=""/>
+        <alias field="Province" index="1" name=""/>
+        <alias field="Prov_code" index="2" name=""/>
+        <alias field="District_n" index="3" name=""/>
+        <alias field="Dist_iaa" index="4" name=""/>
+        <alias field="Pcode_CSO" index="5" name=""/>
+        <alias field="Dist_code" index="6" name=""/>
+        <alias field="HASC_code" index="7" name=""/>
+        <alias field="ID_statoid" index="8" name=""/>
+        <alias field="Pop2010" index="9" name=""/>
+        <alias field="Male10" index="10" name=""/>
+        <alias field="Female10" index="11" name=""/>
+        <alias field="Source" index="12" name=""/>
+        <alias field="Shape_Leng" index="13" name=""/>
+        <alias field="Shape_Area" index="14" name=""/>
+        <alias field="ISO3V10" index="15" name=""/>
+        <alias field="shape_le_1" index="16" name=""/>
+        <alias field="ID" index="17" name=""/>
+        <alias field="Unsdcode" index="18" name=""/>
+        <alias field="Countryeng" index="19" name=""/>
+        <alias field="Shape_Le_2" index="20" name=""/>
+        <alias field="shape_ar_1" index="21" name=""/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <attributeactions default="-1"/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="6553708">
+        <columns/>
+      </attributetableconfig>
+      <editform></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <widgets/>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+    </maplayer>
+    <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" readOnly="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
+      <extent>
+        <xmin>2444322.1796055524609983</xmin>
+        <ymin>-1976809.4403466428630054</ymin>
+        <xmax>3748452.11548130540177226</xmax>
+        <ymax>-926423.31520003150217235</ymax>
+      </extent>
+      <id>memory_20180927173848034</id>
+      <datasource>memory?geometry=Point&amp;crs=EPSG:102022&amp;field=id:integer(-1,0)</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>Random points</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=aea +lat_1=20 +lat_2=-23 +lat_0=0 +lon_0=25 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</proj4>
+          <srsid>27145</srsid>
+          <srid>102022</srid>
+          <authid>EPSG:102022</authid>
+          <description>Africa_Albers_Equal_Area_Conic</description>
+          <projectionacronym>aea</projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <provider encoding="System">memory</provider>
+      <previewExpression>COALESCE( "id", '&lt;NULL>' )</previewExpression>
+      <vectorjoins/>
+      <layerDependencies/>
+      <expressionfields/>
+      <defaults>
+        <default field="id" expression=""/>
+      </defaults>
+      <map-layer-style-manager current="">
+        <map-layer-style name=""/>
+      </map-layer-style-manager>
+      <edittypes>
+        <edittype widgetv2type="TextEdit" name="id">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+      </edittypes>
+      <renderer-v2 forceraster="0" symbollevels="0" type="singleSymbol" enableorderby="0">
+        <symbols>
+          <symbol alpha="1" clip_to_extent="1" type="marker" name="0">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="209,101,51,255"/>
+              <prop k="horizontal_anchor_point" v="1"/>
+              <prop k="joinstyle" v="bevel"/>
+              <prop k="name" v="circle"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_color" v="0,0,0,255"/>
+              <prop k="outline_style" v="solid"/>
+              <prop k="outline_width" v="0"/>
+              <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="diameter"/>
+              <prop k="size" v="2"/>
+              <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+              <prop k="size_unit" v="MM"/>
+              <prop k="vertical_anchor_point" v="1"/>
+            </layer>
+          </symbol>
+        </symbols>
+        <rotation/>
+        <sizescale scalemethod="diameter"/>
+      </renderer-v2>
+      <labeling type="simple"/>
+      <customproperties/>
+      <blendMode>0</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerTransparency>0</layerTransparency>
+      <displayfield>id</displayfield>
+      <label>0</label>
+      <labelattributes>
+        <label fieldname="" text="Label"/>
+        <family fieldname="" name=".SF NS Text"/>
+        <size fieldname="" units="pt" value="12"/>
+        <bold fieldname="" on="0"/>
+        <italic fieldname="" on="0"/>
+        <underline fieldname="" on="0"/>
+        <strikeout fieldname="" on="0"/>
+        <color fieldname="" red="0" blue="0" green="0"/>
+        <x fieldname=""/>
+        <y fieldname=""/>
+        <offset x="0" y="0" units="pt" yfieldname="" xfieldname=""/>
+        <angle fieldname="" value="0" auto="0"/>
+        <alignment fieldname="" value="center"/>
+        <buffercolor fieldname="" red="255" blue="255" green="255"/>
+        <buffersize fieldname="" units="pt" value="1"/>
+        <bufferenabled fieldname="" on=""/>
+        <multilineenabled fieldname="" on=""/>
+        <selectedonly on=""/>
+      </labelattributes>
+      <annotationform></annotationform>
+      <aliases>
+        <alias field="id" index="0" name=""/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <attributeactions default="-1"/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="23694608">
+        <columns>
+          <column width="-1" hidden="0" type="field" name="id"/>
+          <column width="-1" hidden="1" type="actions"/>
+        </columns>
+      </attributetableconfig>
+      <editform></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <widgets/>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+    </maplayer>
+    <maplayer simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" readOnly="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
+      <id>memory_20180927174048504</id>
+      <datasource>memory?geometry=Point&amp;crs=EPSG:102022&amp;field=id:integer(-1,0)&amp;field=Country:string(255,0)&amp;field=Province:string(255,0)&amp;field=Prov_code:string(255,0)&amp;field=District_n:string(255,0)&amp;field=Dist_iaa:string(255,0)&amp;field=Pcode_CSO:string(255,0)&amp;field=Dist_code:string(255,0)&amp;field=HASC_code:string(255,0)&amp;field=ID_statoid:double(20,5)&amp;field=Pop2010:double(20,5)&amp;field=Male10:double(20,5)&amp;field=Female10:double(20,5)&amp;field=Source:string(255,0)&amp;field=Shape_Leng:double(20,5)&amp;field=Shape_Area:double(20,5)&amp;field=ISO3V10:string(255,0)&amp;field=shape_le_1:double(20,5)&amp;field=ID:string(255,0)&amp;field=Unsdcode:string(255,0)&amp;field=Countryeng:string(255,0)&amp;field=Shape_Le_2:double(20,5)&amp;field=shape_ar_1:double(20,5)</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>Joined layer</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=aea +lat_1=20 +lat_2=-23 +lat_0=0 +lon_0=25 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</proj4>
+          <srsid>27145</srsid>
+          <srid>102022</srid>
+          <authid>EPSG:102022</authid>
+          <description>Africa_Albers_Equal_Area_Conic</description>
+          <projectionacronym>aea</projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <provider encoding="System">memory</provider>
+      <previewExpression>COALESCE( "id", '&lt;NULL>' )</previewExpression>
+      <vectorjoins/>
+      <layerDependencies/>
+      <expressionfields/>
+      <defaults>
+        <default field="id" expression=""/>
+        <default field="Country" expression=""/>
+        <default field="Province" expression=""/>
+        <default field="Prov_code" expression=""/>
+        <default field="District_n" expression=""/>
+        <default field="Dist_iaa" expression=""/>
+        <default field="Pcode_CSO" expression=""/>
+        <default field="Dist_code" expression=""/>
+        <default field="HASC_code" expression=""/>
+        <default field="ID_statoid" expression=""/>
+        <default field="Pop2010" expression=""/>
+        <default field="Male10" expression=""/>
+        <default field="Female10" expression=""/>
+        <default field="Source" expression=""/>
+        <default field="Shape_Leng" expression=""/>
+        <default field="Shape_Area" expression=""/>
+        <default field="ISO3V10" expression=""/>
+        <default field="shape_le_1" expression=""/>
+        <default field="ID" expression=""/>
+        <default field="Unsdcode" expression=""/>
+        <default field="Countryeng" expression=""/>
+        <default field="Shape_Le_2" expression=""/>
+        <default field="shape_ar_1" expression=""/>
+      </defaults>
+      <map-layer-style-manager current="">
+        <map-layer-style name=""/>
+      </map-layer-style-manager>
+      <edittypes>
+        <edittype widgetv2type="TextEdit" name="id">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Country">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Province">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Prov_code">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="District_n">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Dist_iaa">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Pcode_CSO">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Dist_code">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="HASC_code">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="ID_statoid">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Pop2010">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Male10">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Female10">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Source">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Shape_Leng">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Shape_Area">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="ISO3V10">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="shape_le_1">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="ID">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Unsdcode">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Countryeng">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="Shape_Le_2">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+        <edittype widgetv2type="TextEdit" name="shape_ar_1">
+          <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+        </edittype>
+      </edittypes>
+      <renderer-v2 forceraster="0" symbollevels="0" type="singleSymbol" enableorderby="0">
+        <symbols>
+          <symbol alpha="1" clip_to_extent="1" type="marker" name="0">
+            <layer pass="0" class="SimpleMarker" locked="0">
+              <prop k="angle" v="0"/>
+              <prop k="color" v="148,83,253,255"/>
+              <prop k="horizontal_anchor_point" v="1"/>
+              <prop k="joinstyle" v="bevel"/>
+              <prop k="name" v="circle"/>
+              <prop k="offset" v="0,0"/>
+              <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+              <prop k="offset_unit" v="MM"/>
+              <prop k="outline_color" v="0,0,0,255"/>
+              <prop k="outline_style" v="solid"/>
+              <prop k="outline_width" v="0"/>
+              <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+              <prop k="outline_width_unit" v="MM"/>
+              <prop k="scale_method" v="diameter"/>
+              <prop k="size" v="2"/>
+              <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+              <prop k="size_unit" v="MM"/>
+              <prop k="vertical_anchor_point" v="1"/>
+            </layer>
+          </symbol>
+        </symbols>
+        <rotation/>
+        <sizescale scalemethod="diameter"/>
+      </renderer-v2>
+      <labeling type="simple"/>
+      <customproperties/>
+      <blendMode>0</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerTransparency>0</layerTransparency>
+      <displayfield>id</displayfield>
+      <label>0</label>
+      <labelattributes>
+        <label fieldname="" text="Label"/>
+        <family fieldname="" name=".SF NS Text"/>
+        <size fieldname="" units="pt" value="12"/>
+        <bold fieldname="" on="0"/>
+        <italic fieldname="" on="0"/>
+        <underline fieldname="" on="0"/>
+        <strikeout fieldname="" on="0"/>
+        <color fieldname="" red="0" blue="0" green="0"/>
+        <x fieldname=""/>
+        <y fieldname=""/>
+        <offset x="0" y="0" units="pt" yfieldname="" xfieldname=""/>
+        <angle fieldname="" value="0" auto="0"/>
+        <alignment fieldname="" value="center"/>
+        <buffercolor fieldname="" red="255" blue="255" green="255"/>
+        <buffersize fieldname="" units="pt" value="1"/>
+        <bufferenabled fieldname="" on=""/>
+        <multilineenabled fieldname="" on=""/>
+        <selectedonly on=""/>
+      </labelattributes>
+      <annotationform></annotationform>
+      <aliases>
+        <alias field="id" index="0" name=""/>
+        <alias field="Country" index="1" name=""/>
+        <alias field="Province" index="2" name=""/>
+        <alias field="Prov_code" index="3" name=""/>
+        <alias field="District_n" index="4" name=""/>
+        <alias field="Dist_iaa" index="5" name=""/>
+        <alias field="Pcode_CSO" index="6" name=""/>
+        <alias field="Dist_code" index="7" name=""/>
+        <alias field="HASC_code" index="8" name=""/>
+        <alias field="ID_statoid" index="9" name=""/>
+        <alias field="Pop2010" index="10" name=""/>
+        <alias field="Male10" index="11" name=""/>
+        <alias field="Female10" index="12" name=""/>
+        <alias field="Source" index="13" name=""/>
+        <alias field="Shape_Leng" index="14" name=""/>
+        <alias field="Shape_Area" index="15" name=""/>
+        <alias field="ISO3V10" index="16" name=""/>
+        <alias field="shape_le_1" index="17" name=""/>
+        <alias field="ID" index="18" name=""/>
+        <alias field="Unsdcode" index="19" name=""/>
+        <alias field="Countryeng" index="20" name=""/>
+        <alias field="Shape_Le_2" index="21" name=""/>
+        <alias field="shape_ar_1" index="22" name=""/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <attributeactions default="-1"/>
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+        <columns>
+          <column width="-1" hidden="0" type="field" name="id"/>
+          <column width="-1" hidden="0" type="field" name="Country"/>
+          <column width="-1" hidden="0" type="field" name="Province"/>
+          <column width="-1" hidden="0" type="field" name="Prov_code"/>
+          <column width="-1" hidden="0" type="field" name="District_n"/>
+          <column width="-1" hidden="0" type="field" name="Dist_iaa"/>
+          <column width="-1" hidden="0" type="field" name="Pcode_CSO"/>
+          <column width="-1" hidden="0" type="field" name="Dist_code"/>
+          <column width="-1" hidden="0" type="field" name="HASC_code"/>
+          <column width="-1" hidden="0" type="field" name="ID_statoid"/>
+          <column width="-1" hidden="0" type="field" name="Pop2010"/>
+          <column width="-1" hidden="0" type="field" name="Male10"/>
+          <column width="-1" hidden="0" type="field" name="Female10"/>
+          <column width="-1" hidden="0" type="field" name="Source"/>
+          <column width="-1" hidden="0" type="field" name="Shape_Leng"/>
+          <column width="-1" hidden="0" type="field" name="Shape_Area"/>
+          <column width="-1" hidden="0" type="field" name="ISO3V10"/>
+          <column width="-1" hidden="0" type="field" name="shape_le_1"/>
+          <column width="-1" hidden="0" type="field" name="ID"/>
+          <column width="-1" hidden="0" type="field" name="Unsdcode"/>
+          <column width="-1" hidden="0" type="field" name="Countryeng"/>
+          <column width="-1" hidden="0" type="field" name="Shape_Le_2"/>
+          <column width="-1" hidden="0" type="field" name="shape_ar_1"/>
+          <column width="-1" hidden="1" type="actions"/>
+        </columns>
       </attributetableconfig>
       <editform></editform>
       <editforminit/>
@@ -589,7 +1233,7 @@
         <ymax>-916611.49290452257264405</ymax>
       </extent>
       <id>project_district_zambia20180927112642643</id>
-      <datasource>/Users/yujunzhou/Box Sync/Research/ZambiaPrice/data/clean/project_district_zambia.shp</datasource>
+      <datasource>../clean/project_district_zambia.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -871,6 +1515,7 @@
       <SingleCategoryDiagramRenderer diagramType="Histogram" sizeLegend="0" attributeLegend="1">
         <DiagramCategory penColor="#000000" labelPlacementMethod="XHeight" penWidth="0" diagramOrientation="Up" sizeScale="0,0,0,0,0,0" minimumSize="0" barWidth="5" penAlpha="255" maxScaleDenominator="1e+08" backgroundColor="#ffffff" transparency="0" width="15" scaleDependency="Area" backgroundAlpha="255" angleOffset="1440" scaleBasedVisibility="0" enabled="0" height="15" lineSizeScale="0,0,0,0,0,0" sizeType="MM" lineSizeType="MM" minScaleDenominator="inf">
           <fontProperties description=".SF NS Text,13,-1,5,50,0,0,0,0,0" style=""/>
+          <attribute field="" color="#000000" label=""/>
         </DiagramCategory>
         <symbol alpha="1" clip_to_extent="1" type="marker" name="sizeSymbol">
           <layer pass="0" class="SimpleMarker" locked="0">
@@ -896,7 +1541,7 @@
         </symbol>
       </SingleCategoryDiagramRenderer>
       <DiagramLayerSettings yPosColumn="-1" showColumn="-1" linePlacementFlags="10" placement="0" dist="0" xPosColumn="-1" priority="0" obstacle="0" zIndex="0" showAll="1"/>
-      <annotationform></annotationform>
+      <annotationform>.</annotationform>
       <aliases>
         <alias field="Country" index="0" name=""/>
         <alias field="Province" index="1" name=""/>
@@ -937,10 +1582,10 @@
           <column width="-1" hidden="1" type="actions"/>
         </columns>
       </attributetableconfig>
-      <editform></editform>
+      <editform>.</editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
-      <editforminitfilepath></editforminitfilepath>
+      <editforminitfilepath>.</editforminitfilepath>
       <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
 """
 QGIS forms can have a Python function that is called when the form is
@@ -994,11 +1639,13 @@ def my_form_open(dialog, layer, feature):
       <DefaultSnapToleranceUnit type="int">2</DefaultSnapToleranceUnit>
       <LayerSnappingList type="QStringList">
         <value>cropland_country20180927111555048</value>
-        <value>project_district_zambia20180927112642643</value>
-        <value>memory_20180927115013999</value>
         <value>district_cropland20180927115540858</value>
+        <value>memory_20180927115013999</value>
+        <value>project_district_zambia20180927112642643</value>
+        <value>memory_20180927173514347</value>
       </LayerSnappingList>
       <LayerSnappingEnabledList type="QStringList">
+        <value>disabled</value>
         <value>disabled</value>
         <value>disabled</value>
         <value>disabled</value>
@@ -1011,8 +1658,10 @@ def my_form_open(dialog, layer, feature):
         <value>2</value>
         <value>2</value>
         <value>2</value>
+        <value>2</value>
       </LayerSnappingToleranceUnitList>
       <LayerSnapToList type="QStringList">
+        <value>to_vertex_and_segment</value>
         <value>to_vertex_and_segment</value>
         <value>to_vertex_and_segment</value>
         <value>to_vertex_and_segment</value>
@@ -1021,6 +1670,7 @@ def my_form_open(dialog, layer, feature):
       <DefaultSnapType type="QString">off</DefaultSnapType>
       <DefaultSnapTolerance type="double">0</DefaultSnapTolerance>
       <LayerSnappingToleranceList type="QStringList">
+        <value>0.000000</value>
         <value>0.000000</value>
         <value>0.000000</value>
         <value>0.000000</value>
