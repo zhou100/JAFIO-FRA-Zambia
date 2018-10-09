@@ -104,12 +104,29 @@ rsa_price_final$rsa_price_kwa = rsa_price_final$rsa_price * rsa_price_final$mean
 
 rsa_price_kwacha = rsa_price_final %>% select(date,rsa_price_kwa)
 ###################################################################
-# adjust by 
+# Price are all CPI adjusted and converted into the Zambia price
 ##################################################################
 
 # combine into one df
 
 Price = left_join(zam_price_final,rsa_price_kwacha,by = "date")
+
+
+###################################
+# add in the trade data 
+##########################
+
+
+rsa_to_zam <- read_excel("data/trade_flow/rsa_to_zam.xlsx")
+zam_to_rsa <- read_excel("data/trade_flow/zam_to_rsa.xlsx")
+
+rsa_to_zam = rsa_to_zam %>% select(YEAR,MONTH,VALUE,QUANTITY)
+zam_to_rsa = zam_to_rsa %>% select(YEAR,MONTH,VALUE,QUANTITY)
+
+
+yearmon(rsa_to_zam,year_var = "YEAR",month_var = "MONTH")
+
+
 
 # plot the two prices 
  

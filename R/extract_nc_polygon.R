@@ -6,25 +6,52 @@ library(rcropmod)
 library(data.table)
 library(ncdf4)
 library(reshape2)
+library(dplyr)
+library("sp")
+library(measurements)
 
-load("/Users/michaelcecil/Rprojects/ZamVar/data/zam_ref_29.rda")
+
+require(rgdal)
+
+# read in the point from QGIS that generate random points in the polygon
+district.point.shape <- readOGR(dsn = "data/clean/district_point.shp", layer = "district_point")
+
+
+newproj<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+
+district.point.shape.wgs <- spTransform(district.point.shape,CRS=CRS(newproj))
+
+ 
+# make the point shapefile to table
+district.point.df= as.data.frame(district.point.shape.wgs) %>% select (id, coords.x1, coords.x2,District_n)
+
+# adjust colnames 
+#colnames(district.point.df)
+
+#head(district.point.df)
+
+#plot(district.point.shape.wgs)
+
+
+#load("data/clean/zam_ref_29.rda")
 
 
 ##precip
 prec_list = list()
-for(year in 1979:2016){
+for(year in 2015:2016){
   print(paste0("starting_",year,"_prec"))
-  prec_nc <-nc_open(paste0("/Users/michaelcecil/Documents/mswep/prec_",year ,"_5km_zambia.nc"))
+  prec_nc <-nc_open(paste0("C://Users//Administrator//Desktop//mswep_precip//prec_",year ,"_5km_zambia.nc"))
   lat_prec <-ncdf4::ncvar_get(prec_nc, varid="lat")
   lon_prec <- ncdf4::ncvar_get(prec_nc, varid="lon")
   time_prec <-ncdf4::ncvar_get(prec_nc, varid="time")
   prec_data <- ncdf4::ncvar_get(prec_nc, varid="precipitation")
-  for (i in 1:NROW(zam_ref)){
-    pt_lon <- toString(zam_ref[i]$X_wth)
-    pt_lat <- toString(zam_ref[i]$Y_wth)
+  for (i in 1:NROW(district.point.df)){
+    pt_lon <- toString(district.point.df$coords.x1[i])
+    pt_lat <- toString(district.point.df$coords.x2[i])
     pt_lat_lon<-paste0(pt_lat,"_",pt_lon)
 
-    windowed_prec <-data.frame(prec_data[lon_prec==(zam_ref[i]$X_wth), lat_prec==(zam_ref[i]$Y_wth),])
+    # windowed_prec <-data.frame(prec_data[lon_prec==(district.point.df$coords.x1[i]), lat_prec==(district.point.df$coords.x2[i]),])
+    windowed_prec <-data.frame(prec_data[lon_prec==pt_lon, lat_prec==pt_lat,])
     names(windowed_prec) <-c("prec")
     c<-windowed_prec$prec
     dim(c)<-c(8,NROW(c)/8) # reshape values
