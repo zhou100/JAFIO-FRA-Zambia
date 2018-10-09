@@ -14,10 +14,10 @@ library(measurements)
 require(rgdal)
 
 # read in the point from QGIS that generate random points in the polygon
-district.point.shape <- readOGR(dsn = "data/clean/district_point.shp", layer = "district_point")
+district.point.shape <- readOGR(dsn = "data/clean/point_demo.shp", layer = "district_point")
 
 
-newproj<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+# newproj<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 
 district.point.shape.wgs <- spTransform(district.point.shape,CRS=CRS(newproj))
 
