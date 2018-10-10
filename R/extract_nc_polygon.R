@@ -1,68 +1,228 @@
-## extract weather data from MSWEP .nc files
-## save weather data in .rda files
+#########################################################################################
+# Script to extract weather data from nc format .
+# Yujun Zhou 10/09/2018
+
+# Goal: extract daily weather data for each district, ready for calculating weather related measures. 
+
+# Purpose: fast extraction of data in nc files, without transforming to rasters. 
 
 
-library(rcropmod)
-library(data.table)
+# Input: 
+# 1. Point shapefile containing geocoordinates and district information. 
+# Transformed from a polygon , done in ArcGIS or QGIS. 
+# Processing stesp in GIS:
+# a) load a district polygon shapefile
+# b) select a geoprocessing tool to generate random points inside polygon (the more the better)
+
+# * Basically lots of points in each district and average them out to approximate a polygon.
+
+# c) join by spatial location, to add the district (and any other columns if needed) to the point
+# d) save the point shapfile 
+
+
+# 2. precip and temperature in nc format( not contained in the project, too big)
+# one read every three hours, 1990-2010,
+# geocodinates
+
+
+# Output:
+# extracted daily weather data 1990-2016, average at the district level 
+## saved weather data in .rda files
+
+# Steps of extraction 
+
+# 1. get the district point data 
+# 2. get the lat, lon, time from the nc file (one for each year), as well as the data 
+# 3. for every  point in the district point data, find the nearest point in the nc file.
+# 4. join the weather and date information to the district point data
+# 5. append all the points with the added in weather values
+# 6. each points aggregtaed by day, (average precip, min/max temp)
+# 7. repeats for all the other days in the same year.
+# 8. repeats for all the other years.
+
+# Note: for the date variable, it is every 3 hours, I will just take an average for the 8 daily reads
+# The date format in this data is basically days from 1900-01-01 , use the following code to see
+# as.Date( time_prec[1:10],origin = "1900-01-01")
+#########################################################################################
+
 library(ncdf4)
 library(reshape2)
 library(dplyr)
-library("sp")
-library(measurements)
+library(tidyr)
 
-
+library(sp)
 require(rgdal)
 
+######################################################
+# read in the point data and format it 
+##################################################
+
 # read in the point from QGIS that generate random points in the polygon
-district.point.shape <- readOGR(dsn = "data/clean/point_demo.shp", layer = "district_point")
-
-
-# newproj<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-
-district.point.shape.wgs <- spTransform(district.point.shape,CRS=CRS(newproj))
-
- 
+district.point.shape <- readOGR(dsn = "data/clean/random_wgs_points.shp", layer = "random_wgs_points")
 # make the point shapefile to table
-district.point.df= as.data.frame(district.point.shape.wgs) %>% select (id, coords.x1, coords.x2,District_n)
+district.point.df= as.data.frame(district.point.shape) %>% select (coords.x1, coords.x2,District_n)
+# rename the columns
+colnames(district.point.df)=c("lon","lat","district")
 
-# adjust colnames 
-#colnames(district.point.df)
+# add point id
+district.point.df= tibble::rownames_to_column(district.point.df, var = "id")
+
+# check if enough points
+# dim(district.point.df)
 
 #head(district.point.df)
 
-#plot(district.point.shape.wgs)
+# round the lat and lons to 3 digits to help with join
+district.point.df$lon = round(district.point.df$lon,3)
+district.point.df$lat = round(district.point.df$lat,3)
 
+# Plot to see if the point is right.
+# plot(district.point.shape)
 
-#load("data/clean/zam_ref_29.rda")
+#################################################################################
+### Extract Precipitaion data 
+#################################################################################
 
-
-##precip
 prec_list = list()
-for(year in 2015:2016){
+# Looping over differnet years. 
+# remember to test for a single year first
+
+start.year = 1990
+end.year = 2016
+
+for(year in start.year:end.year){
+  
+  ##############################################################################
+  # read in the nc weather data for a given year 
+  ##############################################################################
   print(paste0("starting_",year,"_prec"))
+  start_time <- Sys.time()
+  
+  
+  # Read in the nc data
   prec_nc <-nc_open(paste0("C://Users//Administrator//Desktop//mswep_precip//prec_",year ,"_5km_zambia.nc"))
+
+  # save information into separate data frames 
   lat_prec <-ncdf4::ncvar_get(prec_nc, varid="lat")
   lon_prec <- ncdf4::ncvar_get(prec_nc, varid="lon")
   time_prec <-ncdf4::ncvar_get(prec_nc, varid="time")
   prec_data <- ncdf4::ncvar_get(prec_nc, varid="precipitation")
+  
+  # dim(prec_data)
+  # head(prec_data)
+  
+  ##############################################################################
+  # loop over the points in each district 
+  # for each point in the point data frame, find every day's weather in a given year
+  ##############################################################################
   for (i in 1:NROW(district.point.df)){
-    pt_lon <- toString(district.point.df$coords.x1[i])
-    pt_lat <- toString(district.point.df$coords.x2[i])
-    pt_lat_lon<-paste0(pt_lat,"_",pt_lon)
 
-    # windowed_prec <-data.frame(prec_data[lon_prec==(district.point.df$coords.x1[i]), lat_prec==(district.point.df$coords.x2[i]),])
-    windowed_prec <-data.frame(prec_data[lon_prec==pt_lon, lat_prec==pt_lat,])
+    # save the point coordinates temporarily 
+    pt_lon <- district.point.df$lon[i]
+    pt_lat <- district.point.df$lat[i]
+    pt_id = district.point.df$id[i]
+    
+    # find the nearest point location for any given point in your district point data 
+    lon_location = which.min(abs(lon_prec-pt_lon))
+    lat_location = which.min(abs(lat_prec-pt_lat))
+    
+    # save all the weather data in the given point in the dataframe "windowed_prec"
+    windowed_prec <-data.frame(prec_data[lon_location, lat_location,])
     names(windowed_prec) <-c("prec")
-    c<-windowed_prec$prec
-    dim(c)<-c(8,NROW(c)/8) # reshape values
-    d<- data.frame(colSums(c)) # sum daily precip
-    names(d) <- c("prec")
+    
+    # save the series in a matrix
+    windowed_prec.3hr <-windowed_prec$prec
+    
+    # reshape the long series into a matrix ( 8 columns for 8 reads in a day, and 365 rows for 365 days) 
+    dim(windowed_prec.3hr)<-c(8,NROW(windowed_prec.3hr)/8) 
+    
+    windowed_prec.daily<- data.frame(colSums(windowed_prec.3hr)) # sum daily precip
+    
+    names(windowed_prec.daily) <- c("prec")
 
-    prec_list[[pt_lat_lon]]<-  rbind(prec_list[[pt_lat_lon]],d)
+    if (year==start.year){
+      prec_list[[pt_id]] = windowed_prec.daily
+    } else {
+      prec_list[[pt_id]]<- rbind(prec_list[[pt_id]],windowed_prec.daily)
+    }
+    
   } # for point
+  
+  ##############################################################################
+  # Formatting the extracted weather data in a given year 
+  # aggregate the points in each district 
+  ##############################################################################
+  prec.list.names <- unique(names(prec_list))
+  prec.df.point =  data.frame(
+    setNames(
+      lapply(prec.list.names, function(x) unlist(prec_list[names(prec_list) %in% x], 
+                                                 use.names = FALSE)), prec.list.names))
+  
+  
+  prec.df.point.transpose= as.data.frame(t(prec.df.point)) %>%
+                           tibble::rownames_to_column(var = "id")
+  
+   # remove the "X" in the data 
+   prec.df.point.transpose$id = as.character(as.numeric(as.factor(prec.df.point.transpose$id)))
+  
+
+   # join the original point data frame to have the district information 
+   prec.district =  dplyr::inner_join(district.point.df,prec.df.point.transpose,by="id") %>% 
+                    
+                    group_by(district) %>%  # aggregate by district
+     
+                    select(-id,-lat,-lon) %>% 
+                    
+                    summarise_all(funs(mean(.))) # average of all the points in the same district
+   
+   # reshape and ready for join 
+   district.names <- as.character(prec.district$district)
+   prec.district.date = as.data.frame(t(prec.district[,-1]))
+   rownames(prec.district.date) <- NULL
+   colnames(prec.district.date) <- district.names
+  
+   
+   
+   ##############################################################################
+   # Formatting the date variable and add as a column into the extracted weather data
+   ##############################################################################
+   # reshape the long series into a matrix ( 8 columns for 8 reads in a day, and 365 rows for 365 days) 
+   date.3hr = time_prec
+   dim(date.3hr)<-c(8,NROW(date.3hr)/8) 
+   date.day = date.3hr[1,]
+   # format the date into days 
+   date.day =  as.Date( date.day,origin = "1900-01-01")
+   
+   # save the date into the 
+   prec.district.date$date = date.day
+  
+   # clean the temporary 
+   prec_list = list()
+   
+   # save the data and avoid problems in combing data.
+  if (year==start.year){
+    extracted.prec = prec.district.date
+  } else {
+    extracted.prec = rbind(extracted.prec,prec.district.date)
+  }
+  
+   # counting the processing time 
+   end_time <- Sys.time()
+   print("time for one year is")
+   print(end_time - start_time)
+  
 } # for year
-save(prec_list,file="prec_list_all_29_redo_test.rda")
+
+
+# reorder to make date as the first column
+extracted.prec = extracted.prec %>% select(date,everything())
+
+# head(extracted.prec)
+
+# save data and clean the memory 
+save(extracted.prec,file="rain_9016.rda")
 prec_data<-NULL
+
 
 
 ## tmax, tmin
@@ -105,64 +265,5 @@ save(tmin_list,file="tmin_list_all_29_redo_test.rda")
 
 temp_data<-NULL
 
-##pres
-pres_list = list()
-for(year in 1979:2016){
-  print(paste0("starting_",year,"_pres"))
-
-  pres_nc <-nc_open(paste0("/Users/michaelcecil/Documents/mswep/pres_",year ,"_5km_zambia.nc"))
-  lat_pres <-ncdf4::ncvar_get(pres_nc, varid="lat")
-  lon_pres <- ncdf4::ncvar_get(pres_nc, varid="lon")
-  time_pres <-ncdf4::ncvar_get(pres_nc, varid="time")
-  pres_data <- ncvar_get(pres_nc, varid="data")
-  for (i in 1:NROW(zam_ref)){
-    pt_lon <- toString(zam_ref[i]$X_wth)
-    pt_lat <- toString(zam_ref[i]$Y_wth)
-    pt_lat_lon<-paste0(pt_lat,"_",pt_lon)
-
-    windowed_pres <-data.frame(pres_data[lon_pres==(zam_ref[i]$X_wth), lat_pres==(zam_ref[i]$Y_wth),])
-    names(windowed_pres) <-c("pres")
-    c<-windowed_pres$pres
-    dim(c)<-c(8,NROW(c)/8) # reshape values
-    d<- data.frame(colMeans(c)) # average daily pressure
-    names(d) <- c("pres")
-    e<- d*(0.01) ## convert from Pa  to millibar
-
-    pres_list[[pt_lat_lon]]<-  rbind(pres_list[[pt_lat_lon]],e)
-  } # for point
-} # for year
-
-save(pres_list,file="pres_list_all_29_redo_test.rda")
-pres_data<-NULL
-
-##shum
-sh_list = list()
-for(year in 1979:2016){
-  print(paste0("starting_",year,"_sh"))
-
-  sh_nc <-nc_open(paste0("/Users/michaelcecil/Documents/mswep/shum_",year ,"_5km_zambia.nc"))
-  lat_sh <-ncdf4::ncvar_get(sh_nc, varid="lat")
-  lon_sh <- ncdf4::ncvar_get(sh_nc, varid="lon")
-  time_sh <-ncdf4::ncvar_get(sh_nc, varid="time")
-  sh_data <- ncdf4::ncvar_get(sh_nc, varid="data")
-  for (i in 1:NROW(zam_ref)){
-    pt_lon <- toString(zam_ref[i]$X_wth)
-    pt_lat <- toString(zam_ref[i]$Y_wth)
-    pt_lat_lon<-paste0(pt_lat,"_",pt_lon)
-
-    windowed_sh <-data.frame(sh_data[lon_sh==(zam_ref[i]$X_wth), lat_sh==(zam_ref[i]$Y_wth),])
-    names(windowed_sh) <-c("sh")
-    c<-windowed_sh$sh
-    dim(c)<-c(8,NROW(c)/8) # reshape values
-    d<- data.frame(colMeans(c)) # average daily sh
-    names(d) <- c("sh")
-     ## no conversion for sh
-
-    sh_list[[pt_lat_lon]]<-  rbind(sh_list[[pt_lat_lon]],d)
-  } # for point
-} # for year
-
-save(sh_list,file="sh_list_all_29_redo_test.rda")
-sh_data<-NULL
 
 
