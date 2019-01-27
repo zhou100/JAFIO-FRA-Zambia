@@ -15,6 +15,15 @@ source("R/functions/Yearmon.R")
 zam_price <- read_excel("data/maize_prices/zam_price.xlsx")
 #head(zam_price)
 
+
+# select the markets where FRA purchases are made 
+
+
+
+
+
+
+
 # select Lusaka price 
 zam_price_clean1217 = zam_price %>% filter(mkt_name=="Lusaka") %>% select(mp_month,mp_year,mp_price)
 zam_price_clean0312 = zam_price %>% filter(mkt_name=="Lusaka Urban") %>% select(mp_month,mp_year,mp_price)
