@@ -43,23 +43,10 @@ Stockholding is expensive for poor economies, which makes trade the usual altern
 
 The Food Reserve Agency (FRA) was established in 1996 with the aim of building and managing national grain stocks (Govereh, Jayne, and Chapoto 2008). The buffer stocks are intended to stabilize maize price and provide available maize supply to the market. The FRA purchases substantial maize from small households in various geographic regions since the 2003/04 marketing year (corresponding to the study period in this paper). The high pan-territorial buying price (uniform price in ) makes the FRA the dominant buyer in the market (Mason and Myers 2013). In 2006 and 2007, the FRA bought more than half of the surplus maize by smallholder farmers (Ricker-Gilbert et al. 2013), which helps to build higher maize stocks. In part to protect the dominant market position of the FRA, the government implemented a series of policies including export bans, import tariffs, and imports through the FRA (Tschirley and Jayne 2010). According to grain traders, millers also get subsidized maize stocks from FRA. These measures to build higher stocks have led the national maize stocks to reach historically high levels after 2009 (shown in Figure 1). But the stock building comes at a considerable financial cost. The procurement and selling of maize at subsidized prices along with the input subsidies account for over 43% of the total agricultural budget (Nkonde et al. 2011). 
 
+
+## Theoretical Model 
+
 ## Method 
-
-This paper tries to find the effects of stockholding policy in Zambia on the maize price level and volatility. The study period is Jan.2003 - Nov. 2009, when have both the market price, FRA buying/selling price and purchase quantity by district. We are comparing district maize price with FRA purchases in the same month with markets that don't have FRA purcase at all. 
-
-The endogeneity issue at hand is multiple. First, several policies were at play and all to a certain degree endogenous to grain production and maize prices, including temporary export ban, import tariff and input subsidy program. Much of this is time variant and work on all the markets (control and treatment) alike, and can be controlled by adding in the policy variable when the policies are in place. Also by adding in the weather shocks in the previous year.
-
-Second, the pricing and purchase quantity of the FRA is endogeous to the local prices, which can be controlled by weather shocks at the local level. Local price matters because of the incomplete infrastrature and a lack of market information system. 
-
-The source of variation are seasonal price changes, across year production/stock changes, across year policy changes and across markets price differences within the same year. 
-
-The identification strategy is to make use of the step by step roll out of the FRA throughout the years. The intensity of treatment is measured in terms of FRA purchase as % of smallholder maize sales at the district level, No. of districts they are buying (as it affects to the price transmission and price expectation). 
-
-The variables of interest are maize price levels, price spread between district market and Lusaka, and coefficient of variation of district level maize price.
-
-The model would be consisted of a structural VAR with one equation as the price to policy and weather, and one equation as the policy to price. But esitmate the equation with a reduced form using OLS. a test between a structural break VAR and a linear VAR
-
-test for threshold 
 
 The usually time-varying and clustering nature of commodity price volatility can be modeled through the use of generalized conditional heteroskedasticity models (GARCH) (Chou, 1988). Developed by Engle (1982) and Bollerslev (1986), GARCH models contemporary and future volatilities as a function of past volatility and past market shocks.To measure maize price volatility in Zambia by allowing for the influence of South Africa’s maize market, a major trading partner, a multivariate GARCH (MGARCH) model is used. Minot (2014) supports the use of a GARCH model over the traditional measure of the coefficient of variation (CV) because the latter depends on the length of the sample when the prices are nonstationary.
 
