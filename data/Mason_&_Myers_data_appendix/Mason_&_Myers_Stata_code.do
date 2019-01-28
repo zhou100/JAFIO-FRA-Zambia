@@ -5,12 +5,18 @@
 *Code written by Nicole Mason, adapted from code for Jayne et al. (2008) - "The effects of NCPB marketing policies on maize market prices in Kenya".
 
 clear
-clear matrixset matsize 700drop _allset memory 200mset more off
+clear matrix
+set matsize 700
+drop _all
+set memory 200m
+set more off
 
 *Set working directory
-cd "/Users/nicolemason/Documents/Dissertation/Essay1_FRA_maize_prices/"
+* cd "/Users/nicolemason/Documents/Dissertation/Essay1_FRA_maize_prices/"
 
-*set graphics schemeset scheme s1mono
+cd "C:\Users\Administrator\iCloudDrive\Year5\Research Projects\ZambiaPrice\data\Mason_&_Myers_data_appendix/"
+*set graphics scheme
+set scheme s1mono
 graph set window fontface "Times New Roman"
 graph set eps fontface "Times New Roman"
 
@@ -23,7 +29,7 @@ graph set eps fontface "Times New Roman"
 
 
 *Get data file
-use "tmp/FRA_effects_on_market_prices_dataset.dta", clear
+use "FRA_effects_on_market_prices_dataset.dta", clear
 
 des
 
@@ -102,18 +108,18 @@ LUSAKA CHOMA SAFEX MCHINJI ///
 mktshare msleftpc aprodpc exportban mznetimports 
 
 *Save full dataset
-save "tmp/Mason_&_Myers_dataset_full.dta", replace
+save "Mason_&_Myers_dataset_full.dta", replace
 
 *Save dataset for Gauss (Choma, Lusaka, SAFEX, MCHINJI, BPP, SPP, mktshare, msleftpc, aprodpc)
-use "tmp/Mason_&_Myers_dataset_full.dta", clear
+use "Mason_&_Myers_dataset_full.dta", clear
 keep date CHOMA LUSAKA SAFEX MCHINJI BPP SPP mktshare msleftpc aprodpc
 order date CHOMA LUSAKA SAFEX MCHINJI BPP SPP mktshare msleftpc aprodpc
-save "tmp/Mason_&_Myers_dataset_for_GAUSS.dta", replace
+save "Mason_&_Myers_dataset_for_GAUSS.dta", replace
 
 
 
 **** Get full dataset
-use "tmp/Mason_&_Myers_dataset_full.dta", clear
+use "Mason_&_Myers_dataset_full.dta", clear
 
 *tsset data
 tsset date, format(%tmm._CY)
@@ -149,24 +155,39 @@ kpss NETPURCH, auto qs notrend
 
 *(c) ADF H0: unit root; H1: trend stationary
 dfuller CHOMA, regress trend lag(1)
-dfuller LUSAKA, regress trend lag(1)dfuller SAFEX, regress trend lag(1)
-dfuller MCHINJI, regress trend lag(1)dfuller BPP, regress trend lag(1)
-dfuller SPP, regress trend lag(1)dfuller NETPURCH, regress trend lag(1)
+dfuller LUSAKA, regress trend lag(1)
+dfuller SAFEX, regress trend lag(1)
+dfuller MCHINJI, regress trend lag(1)
+dfuller BPP, regress trend lag(1)
+dfuller SPP, regress trend lag(1)
+dfuller NETPURCH, regress trend lag(1)
 
 *(d) ADF H0: unit root; H1: level stationary
 dfuller CHOMA,  regress lag(1)
-dfuller LUSAKA,  regress lag(1)dfuller SAFEX,  regress lag(1)
-dfuller MCHINJI,  regress lag(1)dfuller BPP,  regress lag(1)dfuller SPP,  regress lag(1)dfuller NETPURCH,  regress lag(1)
+dfuller LUSAKA,  regress lag(1)
+dfuller SAFEX,  regress lag(1)
+dfuller MCHINJI,  regress lag(1)
+dfuller BPP,  regress lag(1)
+dfuller SPP,  regress lag(1)
+dfuller NETPURCH,  regress lag(1)
+
 *(e) PP H0: unit root; H1: trend stationary
 pperron CHOMA,  trend
 pperron LUSAKA,  trend
-pperron SAFEX,  trendpperron MCHINJI,  trendpperron BPP,  trend
-pperron SPP,  trendpperron NETPURCH,  trend
+pperron SAFEX,  trend
+pperron MCHINJI,  trend
+pperron BPP,  trend
+pperron SPP,  trend
+pperron NETPURCH,  trend
 
 *(f) PP H0: unit root; H1: level stationary
 pperron CHOMA
-pperron LUSAKApperron SAFEX
-pperron MCHINJIpperron BPPpperron SPPpperron NETPURCH
+pperron LUSAKA
+pperron SAFEX
+pperron MCHINJI
+pperron BPP
+pperron SPP
+pperron NETPURCH
 
 
 
@@ -332,16 +353,30 @@ varcom
 *Graph Choma historical and simulated prices
 twoway (line CHOMA date in 4/150, lpattern(solid) clcolor(black) clwidth(medthick)  cmissing(n)) ///
 (line CHOMASIM1 date in 4/150, lpattern(shortdash) clcolor(black) clwidth(medthick)  cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Choma wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Choma wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 graph export "graphs/Journal_article/CHOMASIM_Choma_Lusaka_BPP_SPP_SAFEX_Mchinji_linear.eps", as(eps) preview(on) replace
 
 
 *Graph Lusaka historical and simulated prices
 twoway (line LUSAKA date in 4/150, lpattern(solid) clcolor(black) clwidth(medthick)  cmissing(n)) ///
 (line LUSAKASIM1 date in 4/150, lpattern(shortdash) clcolor(black) clwidth(medthick)  cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Lusaka wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Lusaka wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 graph export "graphs/Journal_article/LUSAKASIM_Choma_Lusaka_BPP_SPP_SAFEX_Mchinji_linear.eps", as(eps) preview(on) replace
 
 tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 in 4/150, stat(n mean sd cv) col(var)
@@ -354,9 +389,14 @@ tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 if date>=522, stat(n mean sd cv) col(v
 **************************************************
 
 clear
-clear matrixset matsize 700drop _allset memory 200mset more off
+clear matrix
+set matsize 700
+drop _all
+set memory 200m
+set more off
 
-*set graphics schemeset scheme s1mono
+*set graphics scheme
+set scheme s1mono
 graph set window fontface "Times New Roman"
 graph set eps fontface "Times New Roman"
 
@@ -435,15 +475,29 @@ varcom
 *Graph Choma historical and simulated prices
 twoway (line CHOMA date in 4/150, lpattern(solid) clcolor(black) clwidth(medthick)  cmissing(n)) ///
 (line CHOMASIM1 date in 4/150, lpattern(shortdash) clcolor(black) clwidth(medthick)  cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Choma wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Choma wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 
 *Graph Lusaka historical and simulated prices
 twoway (line LUSAKA date in 4/150, lpattern(solid) clcolor(black) clwidth(medthick)  cmissing(n)) ///
 (line LUSAKASIM1 date in 4/150, lpattern(shortdash) clcolor(black) clwidth(medthick)  cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Lusaka wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Lusaka wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 in 4/150, stat(n mean sd cv) col(var)
 tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 in 4/150 if date<522, stat(n mean sd cv) col(var)
@@ -457,9 +511,14 @@ tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 if date>=522, stat(n mean sd cv) col(v
 **************************************************
 
 clear
-clear matrixset matsize 700drop _allset memory 200mset more off
+clear matrix
+set matsize 700
+drop _all
+set memory 200m
+set more off
 
-*set graphics schemeset scheme s1mono
+*set graphics scheme
+set scheme s1mono
 graph set window fontface "Times New Roman"
 graph set eps fontface "Times New Roman"
 
@@ -539,15 +598,29 @@ varcom
 *Graph Choma historical and simulated prices
 twoway (line CHOMA date in 4/150, lpattern(solid) clcolor(black) clwidth(medthick)  cmissing(n)) ///
 (line CHOMASIM1 date in 4/150, lpattern(shortdash) clcolor(black) clwidth(medthick)  cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Choma wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Choma wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 
 *Graph Lusaka historical and simulated prices
 twoway (line LUSAKA date in 4/150, lpattern(solid) clcolor(black) clwidth(medthick)  cmissing(n)) ///
 (line LUSAKASIM1 date in 4/150, lpattern(shortdash) clcolor(black) clwidth(medthick)  cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Lusaka wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Lusaka wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 in 4/150, stat(n mean sd cv) col(var)
 tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 in 4/150 if date<522, stat(n mean sd cv) col(var)
@@ -559,9 +632,14 @@ tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 if date>=522, stat(n mean sd cv) col(v
 ****************************************************************
 
 clear
-clear matrixset matsize 700drop _allset memory 200mset more off
+clear matrix
+set matsize 700
+drop _all
+set memory 200m
+set more off
 
-*set graphics schemeset scheme s1mono
+*set graphics scheme
+set scheme s1mono
 graph set window fontface "Times New Roman"
 graph set eps fontface "Times New Roman"
 
@@ -644,15 +722,29 @@ varcom
 *Graph Choma historical and simulated prices
 twoway (line CHOMA date in 4/144, lpattern(solid) clcolor(black) clwidth(medthick)  cmissing(n)) ///
 (line CHOMASIM1 date in 4/144, lpattern(shortdash) clcolor(black) clwidth(medthick)  cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Choma wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Choma wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 
 *Graph Lusaka historical and simulated prices
 twoway (line LUSAKA date in 4/144, lpattern(solid) clcolor(black) clwidth(medthick)  cmissing(n)) ///
 (line LUSAKASIM1 date in 4/144, lpattern(shortdash) clcolor(black) clwidth(medthick)  cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Lusaka wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Lusaka wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 in 4/144, stat(n mean sd cv) col(var)
 tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 in 4/144 if date<522, stat(n mean sd cv) col(var)
@@ -681,9 +773,14 @@ tabstat CHOMA CHOMASIM1 LUSAKA LUSAKASIM1 if date>=522, stat(n mean sd cv) col(v
 
 
 clear
-clear matrixset matsize 700drop _allset memory 200mset more off
+clear matrix
+set matsize 700
+drop _all
+set memory 200m
+set more off
 
-*set graphics schemeset scheme s1mono
+*set graphics scheme
+set scheme s1mono
 graph set window fontface "Times New Roman"
 graph set eps fontface "Times New Roman"
 
@@ -897,17 +994,31 @@ varcomsb
 *Graph Choma historical and simulated prices
 twoway (line CHOMA date, lpattern(solid) clcolor(black) cmissing(n)) ///
 (line CHOMASIMsb1 date, lpattern(shortdash) clcolor(black) cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
-xline(509) ///xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xline(509) ///
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 
 *Graph Lusaka historical and simulated prices
 twoway (line LUSAKA date, lpattern(solid) clcolor(black) cmissing(n)) ///
 (line LUSAKASIMsb1 date, lpattern(shortdash) clcolor(black) cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
-xline(509) ///xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xline(509) ///
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 **************** SIMULATED *NOT* PRICES IN REASONABLE RANGE ****************
 
@@ -920,9 +1031,14 @@ xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 
 
 
 clear
-clear matrixset matsize 700drop _allset memory 200mset more off
+clear matrix
+set matsize 700
+drop _all
+set memory 200m
+set more off
 
-*set graphics schemeset scheme s1mono
+*set graphics scheme
+set scheme s1mono
 graph set window fontface "Times New Roman"
 graph set eps fontface "Times New Roman"
 
@@ -1136,17 +1252,31 @@ varcomsb
 *Graph Choma historical and simulated prices
 twoway (line CHOMA date, lpattern(solid) clcolor(black) cmissing(n)) ///
 (line CHOMASIMsb1 date, lpattern(shortdash) clcolor(black) cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
-xline(509) ///xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xline(509) ///
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 
 *Graph Lusaka historical and simulated prices
 twoway (line LUSAKA date, lpattern(solid) clcolor(black) cmissing(n)) ///
 (line LUSAKASIMsb1 date, lpattern(shortdash) clcolor(black) cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
-xline(509) ///xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xline(509) ///
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 **************** SIMULATED *NOT* PRICES IN REASONABLE RANGE ****************
 
@@ -1158,9 +1288,14 @@ xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 
 
 
 clear
-clear matrixset matsize 700drop _allset memory 200mset more off
+clear matrix
+set matsize 700
+drop _all
+set memory 200m
+set more off
 
-*set graphics schemeset scheme s1mono
+*set graphics scheme
+set scheme s1mono
 graph set window fontface "Times New Roman"
 graph set eps fontface "Times New Roman"
 
@@ -1374,16 +1509,30 @@ varcomsb
 *Graph Choma historical and simulated prices
 twoway (line CHOMA date, lpattern(solid) clcolor(black) cmissing(n)) ///
 (line CHOMASIMsb1 date, lpattern(shortdash) clcolor(black) cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 
 *Graph Lusaka historical and simulated prices
 twoway (line LUSAKA date, lpattern(solid) clcolor(black) cmissing(n)) ///
 (line LUSAKASIMsb1 date, lpattern(shortdash) clcolor(black) cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
-xline(509) ///xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xline(509) ///
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 **************** SIMULATED *NOT* PRICES IN REASONABLE RANGE ****************
 
@@ -1397,9 +1546,14 @@ xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 
 
 
 clear
-clear matrixset matsize 700drop _allset memory 200mset more off
+clear matrix
+set matsize 700
+drop _all
+set memory 200m
+set more off
 
-*set graphics schemeset scheme s1mono
+*set graphics scheme
+set scheme s1mono
 graph set window fontface "Times New Roman"
 graph set eps fontface "Times New Roman"
 
@@ -1613,17 +1767,31 @@ varcomsb
 *Graph Choma historical and simulated prices
 twoway (line CHOMA date, lpattern(solid) clcolor(black) cmissing(n)) ///
 (line CHOMASIMsb1 date, lpattern(shortdash) clcolor(black) cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
-xline(525) ///xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xline(525) ///
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 
 *Graph Lusaka historical and simulated prices
 twoway (line LUSAKA date, lpattern(solid) clcolor(black) cmissing(n)) ///
 (line LUSAKASIMsb1 date, lpattern(shortdash) clcolor(black) cmissing(n)), ///
-ysize (3.5) xsize(6) ///ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
-xline(525) ///xtitle("") ///xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
-xmtick(##12) ///legend(row(1) size(medsmall) ///lab(1 "Historical") ///lab(2 "Simulated"))
+ysize (3.5) xsize(6) ///
+ytitle("Wholesale maize price (ZMK/kg)", size(medsmall) ) ///
+ylabel(#10, angle(horizontal) format(%9.0gc) labsize(medsmall)) /// 
+xline(525) ///
+xtitle("") ///
+xlabel(#14,  angle(45) labsize(medsmall) tstyle(major) valuelabel) ///
+xmtick(##12) ///
+legend(row(1) size(medsmall) ///
+lab(1 "Historical") ///
+lab(2 "Simulated"))
 
 **************** SIMULATED PRICES *NOT* IN REASONABLE RANGE ****************
 

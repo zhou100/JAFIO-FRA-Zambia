@@ -4,10 +4,13 @@
 ##################################################################
 rm(list=ls())
 require(tidyverse)
+library(imputeTS)
+library(readxl)
+
 source("R/functions/Yearmon.R")
 
 ##################################################################
-# read in the price data (2003-2008)
+# read in the Zambia price data (2003-2008)
 ##################################################################
 # WFP price from https://data.humdata.org/dataset/wfp-food-prices
 
@@ -34,7 +37,7 @@ maize.white.price = yearmon(maize.white.price,year_var = "mp_year",month_var = "
 maize2003= maize.white.price %>% dplyr::filter(mp_year == 2003)
 maize2003.mkt = unique(maize2003$mkt_name)
 
-# data on FRA sales available through December 2008 only
+ # data on FRA sales available through December 2008 only
 maize.0308= maize.white.price %>% 
   dplyr::filter(mkt_name %in% maize2003.mkt) %>% 
   dplyr::filter(mp_year<2009)
@@ -85,9 +88,11 @@ length(unique(zambia.maize.master$mkt_name))
 
 
 # select the markets where FRA purchases are made 
+library(readxl)
 fra_purchase <- read_excel("data/data_for_fra_purchases_0203-0910.xls")
 sort(unique(fra_purchase$distname))
 
+# check the districts where we don't have 
 condition = unique(zambia.maize.master$mkt_name) %in% unique(fra_purchase$distname)
 
 unique(zambia.maize.master$mkt_name)[!condition]
@@ -97,6 +102,24 @@ unique(zambia.maize.master$mkt_name)[!condition]
 zambia.maize.master$mkt_name[zambia.maize.master$mkt_name =="Kabwe Urban"] = "Kabwe_urban"
 zambia.maize.master$mkt_name[zambia.maize.master$mkt_name =="Lusaka Urban"] = "Lusaka_urban"
 
+# transform from long to wide 
+
+zambia0309.wide = zambia.maize.master %>% spread(key =mkt_name, value=mp_price) %>% dplyr::select(-`Kabwe Rural`,-`Lusaka Rural`,-`Ndola Rural`)
+
+
+
+
+##################################################################
+# read in the South africa and malawi price data (2003-2008) from nicole mason paper 
+##################################################################
+library(haven)
+Mason_Myers_dataset_full <- read_dta("data/Mason_&_Myers_data_appendix/Mason_&_Myers_dataset_full.dta")
+
+mason0309 = Mason_Myers_dataset_full %>% dplyr::filter(year>2002 & year<2009)
+mason0309 = yearmon(mason0309,year_var = "year",month_var = "month")
+
+
+price.joined.original = left_join(zambia0309.wide,mason0309,by="date")
 
 
 ##################################################################
@@ -110,7 +133,7 @@ colnames(cpi_zambia)[1]="year"
 cpi_zambia$year= as.character(cpi_zambia$year)
 
 # adjust yearly cpi to monthly cpi
-date =  seq(zam_price_yearmon$date[1],length=185,by="+1 month")
+date =  seq(zambia0309.wide$date[1],length=nrow(zambia0309.wide),by="+1 month")
 cpi_zambia_month = as.data.frame(date)
 cpi_zambia_month$year = substring(date,1,4)
 
@@ -126,89 +149,50 @@ cpi_zambia_adjust$cpi_zambia = cpi_zambia_expanded$cpi_zambia/cpi_zambia_expande
 
 # adjust the prices by cpi 
 
-zam_price_final = dplyr::left_join(zam_price_filled,cpi_zambia_adjust,by="date")
-zam_price_final$zam_price = zam_price_final$mp_price/zam_price_final$cpi_zambia *100
-zam_price_final = zam_price_final %>% select(date,zam_price)
+# colnames(price.full.data)[1:33]
 
-rsa_price_final = dplyr::left_join(rsa_price,cpi_rsa_adjust,by="date")
-rsa_price_final$rsa_price = rsa_price_final$price/rsa_price_final$cpi_rsa *100 
-rsa_price_final = rsa_price_final %>% select(date,rsa_price)
+zam.price.original = price.joined.original[,1:33]
+rsa.price.original = price.joined.original %>% select(date,SAFEX)
+
+zam.price.original = dplyr::left_join(zam.price.original,cpi_zambia_adjust,by="date")
+rsa.price.original = dplyr::left_join(rsa.price.original,cpi_rsa_adjust,by="date")
 
 
-##################################################################
-# adjust by exchange rate 
-##################################################################
+rsa.price.deflate = rsa.price.original %>% mutate(SAFEX_adj= SAFEX/cpi_rsa*100) %>% select(SAFEX,SAFEX_adj)
+zam.price.deflate = zam.price.original %>%  mutate_at( vars(Chingola:Solwezi), funs(./cpi_zambia*100*1000)) %>%
+          select(-year,-cpi_zambia)
 
-ex= read.csv("data/ExchangeRate.csv")
-colnames(ex) = c("DATE","rand_per_kwa")
-#  from  daily exchange rate to monthly (average)
-ex$date = as.Date (ex$DATE,"%m/%d/%Y")
-ex$yearmon = substring(ex$date,1,7)
 
-# before 2013,unit is in 1000
- adjust = ex[ex$date <"2013-01-01",]
- adjust$rand_per_kwa = adjust$rand_per_kwa/1000
 
- later =  ex[ex$date > "2013-01-01",]
- 
- full = bind_rows(adjust,later)
-  
- as = full %>% group_by(yearmon) %>% select(rand_per_kwa) %>%  summarise(mean_ex= mean(rand_per_kwa))
+mason.vars  = price.joined.original[,34:ncol(price.joined.original)] %>% select(-SAFEX)
 
-# adjust to kg from ton by diving 1000
-rsa_price_final$rsa_price = rsa_price_final$rsa_price/1000
+monthly.prices = bind_cols(zam.price.deflate,rsa.price.deflate,mason.vars)
 
-rsa_price_final$yearmon = substring(rsa_price_final$date,1,7)
-rsa_price_final = left_join(rsa_price_final,as,by = "yearmon")
-rsa_price_final$rsa_price_kwa = rsa_price_final$rsa_price * rsa_price_final$mean_ex
 
-rsa_price_kwacha = rsa_price_final %>% select(date,rsa_price_kwa)
-###################################################################
-# Price are all CPI adjusted and converted into the Zambia price
-##################################################################
-
-# combine into one df
-
-Price = left_join(zam_price_final,rsa_price_kwacha,by = "date")
+write.csv(monthly.prices,"data/clean/price/monthly_price",row.names = FALSE)
 
 
 ###################################
 # add in the trade data 
 ##########################
-
-
-rsa_to_zam <- read_excel("data/trade_flow/rsa_to_zam.xlsx")
-zam_to_rsa <- read_excel("data/trade_flow/zam_to_rsa.xlsx")
-
-rsa_to_zam = yearmon(rsa_to_zam,year_var = "YEAR",month_var = "MONTH")
-zam_to_rsa = yearmon(zam_to_rsa,year_var = "YEAR",month_var = "MONTH")
- 
-rsa_to_zam.fill = rsa_to_zam %>% select(YEAR,MONTH,VALUE,QUANTITY,date) %>%  
-  complete(date = seq.Date(min(date), max(date), by="month")) %>% 
-  mutate(YEAR = format(date,"%Y"),MONTH= as.numeric(format(date,"%m")))
-  
-
-zam_to_rsa.fill = zam_to_rsa %>% select(YEAR,MONTH,VALUE,QUANTITY,date) %>% 
-  complete(date = seq.Date(as.Date("1996-10-01"), as.Date("2017-02-01"), by="month")) %>% 
-  mutate(YEAR = format(date,"%Y"),MONTH= as.numeric(format(date,"%m")))
-
-
-
-
-complete(Date = seq.Date("1996-10-01", "2008-12-01", by="month"))
+# 
+# library(readxl)
+# rsa_to_zam <- read_excel("data/trade_flow/rsa_to_zam.xlsx")
+# zam_to_rsa <- read_excel("data/trade_flow/zam_to_rsa.xlsx")
+# 
+# rsa_to_zam = yearmon(rsa_to_zam,year_var = "YEAR",month_var = "MONTH")
+# zam_to_rsa = yearmon(zam_to_rsa,year_var = "YEAR",month_var = "MONTH")
+#  
+# rsa_to_zam.fill = rsa_to_zam %>% select(YEAR,MONTH,VALUE,QUANTITY,date) %>%  
+#   complete(date = seq.Date(min(date), max(date), by="month")) %>% 
+#   mutate(YEAR = format(date,"%Y"),MONTH= as.numeric(format(date,"%m")))
+#   
+# 
+# zam_to_rsa.fill = zam_to_rsa %>% select(YEAR,MONTH,VALUE,QUANTITY,date) %>% 
+#   complete(date = seq.Date(as.Date("1996-10-01"), as.Date("2017-02-01"), by="month")) %>% 
+#   mutate(YEAR = format(date,"%Y"),MONTH= as.numeric(format(date,"%m")))
 
 
 
-yearmon(rsa_to_zam,year_var = "YEAR",month_var = "MONTH")
 
-
-
-# plot the two prices 
- 
-ggplot(data = Price, aes(x = date)) + geom_line(aes(y = rsa_price_kwa),color="blue") + geom_line(aes(y = zam_price),color="red")+ theme(legend.position = "right")
-
-require("forecast")
-require("vars")
-
-# weather data 
 
