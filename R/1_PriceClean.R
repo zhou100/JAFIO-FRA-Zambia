@@ -194,5 +194,45 @@ write.csv(monthly.prices,"data/clean/price/monthly_price",row.names = FALSE)
 
 
 
+source("R/functions/GoogleMapApi.r") 
+map.key = "AIzaSyCekhGFVTC9Vsp5W3lrxFD2TMZP_wbWjhk"
 
 
+market_names_zam<-unique(zambia.maize.master$mkt_name)
+market_names_zam<- as.character(market_names_zam)
+
+
+address_zam <- lapply(market_names_zam, function(x){paste(x,"Zambia",sep=",")})
+address_zam  = unlist (address_zam)
+
+
+coord_zam = coordFind(address_zam)
+coord_zam$mkt  = market_names_zam
+
+coord_zam
+ 
+
+write.csv(coord_zam,"data/road/coord_zam.csv",row.names=FALSE)
+
+# install.packages("gmapsdistance")
+
+gmapsdistance::set.api.key("AIzaSyCekhGFVTC9Vsp5W3lrxFD2TMZP_wbWjhk")
+gmapsdistance::get.api.key()
+
+
+gmapsdistance::gmapsdistance(
+  origin="Kitwe+Zambia",
+  destination= "Lusaka+Zambia",
+  combinations = "all",
+  mode="driving",
+  key = gmapsdistance::get.api.key(),
+  shape = "wide",
+  avoid = "",
+  departure = "now",
+  dep_date = "2021-01-01",
+  dep_time = "12:00:00",
+  traffic_model="optimistic",
+  arrival = "",
+  arr_date = "",
+  arr_time = ""
+)
