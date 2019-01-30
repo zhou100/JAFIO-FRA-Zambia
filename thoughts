@@ -43,7 +43,25 @@ apart from the FRA sales, also need to consider the exports and imports
  FRA purchase months: 6-10,
  FRA sales month: 12-4 , sold at the nearest district market, so no distance measure is needed.
  
- 
- 
- 
+ Lean Season 2-4 
 
+1. Panel regression
+
+Price_lean - Price_year_average = imports_t-1 * distance + FRA_sales_t +  FRA_purchase t_1 (locally) + annual stock +
+
+weather_i,t-1
+
+
+
+
+FRA purchase price , the same through out the year 
+
+
+
+
+## theoretical model 
+
+a government 
+
+sell low during season and buy high during lean season 
+ 
