@@ -18,7 +18,7 @@ source("R/functions/Yearmon.R")
 # zambia_foodprices = wfpvam_foodprices %>% dplyr::filter(adm0_name == "Zambia")
 # save(zambia_foodprices,file="data/maize_prices/zam_price.rda")
 
-load("data/maize_prices/zam_price.rda")
+load("data/raw/maize_prices/zam_price.rda")
 # select maize price and mealie meals 
 # unique(price.df$cm_name)
 
@@ -68,11 +68,11 @@ maize.0308.missing = maize.0308 %>% dplyr::filter(mkt_name %in% unique(obs.count
 
 
 maize.0308.luangwa = maize.0308.missing %>% filter(mkt_name=="Luangwa") %>%  
-   complete(date = seq.Date(min(date), max(date), by="month")) %>%   fill(mkt_name)
+   tidyr::complete(date = seq.Date(min(date), max(date), by="month")) %>%   fill(mkt_name)
 
 
 maize.0308.mwinilunga  = maize.0308.missing %>% filter(mkt_name=="Mwinilunga") %>%
-   complete(date = seq.Date(min(date), max(date), by="month")) %>%  fill(mkt_name)
+  tidyr::complete(date = seq.Date(min(date), max(date), by="month")) %>%  fill(mkt_name)
 
 
 library(imputeTS)
@@ -89,7 +89,7 @@ length(unique(zambia.maize.master$mkt_name))
 
 # select the markets where FRA purchases are made 
 library(readxl)
-fra_purchase <- read_excel("data/data_for_fra_purchases_0203-0910.xls")
+fra_purchase <- read_excel("data/raw/FRA/data_for_fra_purchases_0203-0910.xls")
 sort(unique(fra_purchase$distname))
 
 # check the districts where we don't have 
@@ -99,8 +99,8 @@ unique(zambia.maize.master$mkt_name)[!condition]
 
 # "Kabwe Rural"  "Kabwe Urban"  "Ndola Rural"  "Lusaka Rural" "Lusaka Urban"
 
-zambia.maize.master$mkt_name[zambia.maize.master$mkt_name =="Kabwe Urban"] = "Kabwe_urban"
-zambia.maize.master$mkt_name[zambia.maize.master$mkt_name =="Lusaka Urban"] = "Lusaka_urban"
+zambia.maize.master$mkt_name[zambia.maize.master$mkt_name =="Kabwe Urban"] = "Kabwe"
+zambia.maize.master$mkt_name[zambia.maize.master$mkt_name =="Lusaka Urban"] = "Lusaka"
 
 # transform from long to wide 
 
@@ -127,8 +127,8 @@ price.joined.original = left_join(zambia0309.wide,mason0309,by="date")
 ##################################################################
 
 # read in the cpi data 
-cpi_rsa = read.csv("data/cpi/cpi_rsa.csv")
-cpi_zambia = read.csv("data/cpi/cpi_zambia.csv")
+cpi_rsa = read.csv("data/raw/cpi/cpi_rsa.csv")
+cpi_zambia = read.csv("data/raw/cpi/cpi_zambia.csv")
 colnames(cpi_zambia)[1]="year"
 cpi_zambia$year= as.character(cpi_zambia$year)
 
@@ -169,7 +169,7 @@ mason.vars  = price.joined.original[,34:ncol(price.joined.original)] %>% select(
 monthly.prices = bind_cols(zam.price.deflate,rsa.price.deflate,mason.vars)
 
 
-write.csv(monthly.prices,"data/clean/price/monthly_price",row.names = FALSE)
+write.csv(monthly.prices,"data/clean/price/monthly_price.csv",row.names = FALSE)
 
 
 ###################################
@@ -194,12 +194,16 @@ write.csv(monthly.prices,"data/clean/price/monthly_price",row.names = FALSE)
 
 
 
+###################################
+# Get distance measure 
+##########################
+
 source("R/functions/GoogleMapApi.r") 
-map.key = "AIzaSyCekhGFVTC9Vsp5W3lrxFD2TMZP_wbWjhk"
+## add your own google map key 
+map.key = ""
 
 
-market_names_zam<-unique(zambia.maize.master$mkt_name)
-market_names_zam<- as.character(market_names_zam)
+market_names_zam<-colnames(zambia0309.wide)[2:33]
 
 
 address_zam <- lapply(market_names_zam, function(x){paste(x,"Zambia",sep=",")})
@@ -212,27 +216,62 @@ coord_zam$mkt  = market_names_zam
 coord_zam
  
 
-write.csv(coord_zam,"data/road/coord_zam.csv",row.names=FALSE)
+write.csv(coord_zam,"data/raw/road/coord_zam.csv",row.names=FALSE)
 
-# install.packages("gmapsdistance")
+#install.packages("gmapsdistance")
 
-gmapsdistance::set.api.key("AIzaSyCekhGFVTC9Vsp5W3lrxFD2TMZP_wbWjhk")
+library(gmapsdistance)
+# add you own key 
+gmapsdistance::set.api.key("")
 gmapsdistance::get.api.key()
 
 
-gmapsdistance::gmapsdistance(
-  origin="Kitwe+Zambia",
+origins = as.character(coord_zam$formatted)
+origins.formatted = gsub(origins,pattern = ", ",replacement = "+")
+
+# couldn't find routes to senanga, use the nearby city kalangola instead 
+
+origins.formatted[30] = "kalangola+Zambia"
+
+
+travel_time = gmapsdistance::gmapsdistance(
+  origin=origins.formatted,
   destination= "Lusaka+Zambia",
   combinations = "all",
   mode="driving",
   key = gmapsdistance::get.api.key(),
-  shape = "wide",
+  shape = "long",
   avoid = "",
   departure = "now",
-  dep_date = "2021-01-01",
+  dep_date = "2019-02-01",
   dep_time = "12:00:00",
   traffic_model="optimistic",
   arrival = "",
   arr_date = "",
   arr_time = ""
 )
+
+
+# Formating 
+distance.df = as.data.frame(travel_time)
+
+distance.df["mkt_name"] = coord_zam$mkt
+
+mkt.distance = distance.df %>% 
+  dplyr::mutate(distance_km = Distance.Distance/1000 ) %>%
+  dplyr::mutate(travel_hours = Time.Time/3600 ) %>% 
+  dplyr::select(mkt_name,travel_hours,distance_km)
+
+write.csv(mkt.distance,"data/clean/mkt_distance.csv",row.names = FALSE)
+
+###################################
+# Get yearly stock and crop acreage 
+###################################
+library(readxl)
+zambia_annual <- read_excel("data/raw/zambia_annual.xlsx")
+
+zambia_annual = zambia_annual %>% dplyr::filter(Time>2001 & Time<2010)
+
+colnames(zambia_annual)=c("year","area_harvested","production","stock_begin","stock_end","supply","consumption","feed","FSI")
+
+write.csv(zambia_annual,"data/clean/zambia_annual.csv",row.names = FALSE)

@@ -48,10 +48,7 @@ apart from the FRA sales, also need to consider the exports and imports
 1. Panel regression
 
 Price_lean - Price_year_average = imports_t-1 * distance + FRA_sales_t +  FRA_purchase t_1 (locally) + annual stock +
-
 weather_i,t-1
-
-
 
 
 FRA purchase price , the same through out the year 
