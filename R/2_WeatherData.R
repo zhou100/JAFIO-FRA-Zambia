@@ -135,11 +135,11 @@ tmean.cropyear =
 
 gdd = tmean %>%
   dplyr::group_by(cropyear) %>%
-  dplyr::arrange(Date) %>%
+  dplyr::arrange(date) %>%
   dplyr::mutate_all(funs(ifelse(.>8 & .<30,1,0))) %>%
   dplyr::group_by(cropyear) %>%
-  dplyr::summarise_all(funs(length(Date[.==1])))   %>% # count the days with 0 rain
-  dplyr::select(-Date)
+  dplyr::summarise_all(funs(length(date[.==1])))   %>% # count the days with 0 rain
+  dplyr::select(-date)
  
 
 #################################################################################
@@ -148,34 +148,51 @@ gdd = tmean %>%
 #################################################################################
 
 
-mw.heatday = mw.temp.mean.full %>%
+heatday = tmean %>%
   dplyr::group_by(cropyear) %>%
-  dplyr::arrange(Date) %>%
+  dplyr::arrange(date) %>%
   dplyr::mutate_all(funs(ifelse(.>=30,1,0))) %>%
   dplyr::group_by(cropyear) %>%
-  dplyr::summarise_all(funs(length(Date[.==1])))   %>% # count the days with 0 rain
-  dplyr::select(-Date)
+  dplyr::summarise_all(funs(length(date[.==1])))   %>% # count the days with 0 rain
+  dplyr::select(-date)
 
-tz.heatday = tz.temp.mean.full %>%
-  dplyr::group_by(cropyear) %>%
-  dplyr::arrange(Date) %>%
-  dplyr::mutate_all(funs(ifelse(.>8 & .<32,1,0))) %>%
-  dplyr::group_by(cropyear) %>%
-  dplyr::summarise_all(funs(length(Date[.==1]))) %>%  # count the days with 0 rain
-  dplyr::select(-Date)
 
-ug.heatday = 
-  ug.temp.mean.full %>%
-  dplyr::group_by(cropyear) %>%
-  dplyr::arrange(Date) %>%
-  dplyr::mutate_all(funs(ifelse(.>8 & .<32,1,0))) %>%
-  dplyr::group_by(cropyear) %>%
-  dplyr::summarise_all(funs(length(Date[.==1]))) %>%  # count the days with 0 rain
-  dplyr::select(-Date)
 
-save(tz.heatday,ug.heatday,mw.heatday, file="data/clean/weather/heatday.RData")
-#################################################################################
-## Transpose the rainfall variable with cluster/ipc zone id and year 
-#############################################################################
 
+
+
+###########################
+# transpose data 
+########################
+
+
+source("R/functions/WeatherTranspose.R")
+
+WeatherTranspose(day1rain)
+
+weathervars = list(day1rain,maxdaysnorain,rain.cytot,tmean.cropyear,gdd,heatday)
+weathervars.transpose= lapply(weathervars, WeatherTranspose)
+
+
+colnames(weathervars.transpose[[1]]) = c("mkt_name","cropyear","day1rain","year")
+colnames(weathervars.transpose[[2]]) = c("mkt_name","cropyear","maxdays","year")
+colnames(weathervars.transpose[[3]]) = c("mkt_name","cropyear","raincytot","year")
+colnames(weathervars.transpose[[4]]) = c("mkt_name","cropyear","tmean","year")
+colnames(weathervars.transpose[[5]]) = c("mkt_name","cropyear","gdd","year")
+colnames(weathervars.transpose[[6]]) = c("mkt_name","cropyear","heatday","year")
+
+
+
+###########################
+# Join data 
+########################
+
+weather.vars.join = full_join(weathervars.transpose[[1]],weathervars.transpose[[2]])
+
+for (i in 3:6){
+  weather.vars.join = full_join(weather.vars.join,weathervars.transpose[[i]])
+}
+
+
+save(weather.vars.join,file = "data/clean/weather_vars.rda")
 
