@@ -28,12 +28,42 @@ first_diff  = df.master %>%
 colnames(df.master)
 
 
-ols <-lm(price ~ mean_price + SAFEX_adj +MCHINJI+ mznetimports + import_distance + mktshare + msleftpc + frapurchmt + stock_end +   day1rain + maxdays+raincytot +tmean,data=df.master)
+ols <-lm(price ~ mean_price + SAFEX_adj +MCHINJI+ mznetimports*log(distance_km+1) + mktshare + msleftpc + frapurchmt + stock_end +   day1rain + maxdays+raincytot +tmean,data=df.master)
 summary(ols)
 
+ols <-lm(price ~ mznetimports*log(distance_km+1) + frasalesmt + frapurchmt + stock_end +   day1rain + maxdays+raincytot +tmean + factor(mkt_name),data=df.master)
+summary(ols)
  
 
-cv.ols <-lm(cv_price ~    mean_price + SAFEX_adj +MCHINJI+ mznetimports + L.frasalesmt  + frapurchmt + production +  maxdays+raincytot +tmean +heatday   -1,data=df.master)
+
+# PLOTS OF FRA purchase 
+# 1. June to next july + district fixed effect
+
+# 2. layer in fra purchase
+
+# 3. fra sales locaiton 0 other than where the sales are 
+
+# 4. think about stocks and imports
+
+# sum of  FRA purchase t-1 
+
+# imprts in previous year 
+
+# input subsidy (year fixed effect )
+
+# local price makes sense in terms of production 
+
+
+
+# Monthly price - Psouth , dummy for lean season LS * FRA  
+
+
+# (FRA PURCHASE DURING THE LEAN SEASON: )
+
+
+# jULY - JUNE 
+
+cv.ols <-lm(cv_price ~   mznetimports + mktshare + frasalesmt  + frapurchmt + stock_end +  maxdays+raincytot +tmean +heatday  + factor(mkt_name) -1,data=df.master)
 summary(cv.ols)
 
 ols <-lm(cv_price ~    mznetimports*travel_hours + frasalesmt + frapurchmt + production +  weather -1)
