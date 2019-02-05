@@ -4,6 +4,10 @@
 rm(list=ls())
 require(tidyverse)
 
+
+
+
+
 ##################################################################
 # Panel Regression 
 ##################################################################
@@ -35,30 +39,8 @@ ols <-lm(price ~ mznetimports*log(distance_km+1) + frasalesmt + frapurchmt + sto
 summary(ols)
  
 
-
-# PLOTS OF FRA purchase 
-# 1. June to next july + district fixed effect
-
-# 2. layer in fra purchase
-
-# 3. fra sales locaiton 0 other than where the sales are 
-
-# 4. think about stocks and imports
-
-# sum of  FRA purchase t-1 
-
-# imprts in previous year 
-
-# input subsidy (year fixed effect )
-
-# local price makes sense in terms of production 
-
-
-
-# Monthly price - Psouth , dummy for lean season LS * FRA  
-
-
-# (FRA PURCHASE DURING THE LEAN SEASON: )
+ 
+ 
 
 
 # jULY - JUNE 
