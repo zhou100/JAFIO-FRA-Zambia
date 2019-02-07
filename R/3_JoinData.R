@@ -115,10 +115,7 @@ unique(fra.long$mkt_name)
 df.master = left_join(df.master,fra.long,by=c("mkt_name","year"))
 
 
-
-
-
-
+ 
 ##################################################################
 # read in total number of fra purchase, fra sales and netimports the previous year 
 # from nicole mason paper from previous year 
@@ -132,12 +129,60 @@ mason0210 = Mason_Myers_dataset_full %>% dplyr::filter(year>2001 & year<2011)
 
 mason0210 = yearmon(mason0210,year_var = "year",month_var = "month")
 
+colnames(mason0210)
 
-price.joined.original = left_join(zambia0309.wide,mason0309,by="date")
+annual.fra.buy = mason0210 %>% group_by(year) %>% summarise( annual_purchase= sum(frapurchmt)) %>% mutate(year =year +1 )
+
+annual.fra.sale = mason0210 %>% filter(month<7) %>% group_by(year) %>% summarise( annual_sales= sum(frasalesmt)) 
+
+annual.import =  mason0210 %>% group_by(year) %>% summarise( annual_import= sum(mznetimports)) %>% mutate(year =year +1 )
+
+df.master = left_join(df.master,annual.fra.buy,by="year")
+df.master = left_join(df.master,annual.fra.sale,by="year")
+df.master = left_join(df.master,annual.import,by="year")
 
 
 
 
+
+##################################################################
+# Join the list of commercial millers
+##################################################################
+
+miller.list = read.csv("data/raw/Millers.csv")
+nrow(miller.list)
+
+miller.list.code = miller.list %>% 
+  mutate(dist_code = as.numeric(as.factor(District))) 
+
+miller.number = miller.list.code %>% 
+  group_by(dist_code) %>% 
+  summarise(count_miller = n())
+
+
+miller.df =  left_join(miller.list.code,miller.number,by="dist_code") %>% 
+  mutate(mkt_name=District) %>% 
+  select(mkt_name,count_miller) %>% 
+  distinct()  
+
+
+# Join the master data set 
+df.master = left_join(df.master,miller.df,by="mkt_name")
+
+# replace na due to missing with 0
+df.master["count_miller"] = ifelse(is.na(df.master$count_miller),yes=0,no=df.master$count_miller)
+
+# replace na with 0 
+df.master["miller"] = ifelse(df.master$count_miller==0,yes = 0, no = 1)
+
+
+##################################################################
+# Interact commercial millers with FRA sales 
+##################################################################
+
+df.master["weighted_fra_sales"] = df.master$count_miller/51 * df.master$frasalesmt
+
+df.master["frasales_miller"] = df.master$miller * df.master$frasalesmt
 ##################################################################
 # Save the data frame for later analysis  
 ##################################################################
