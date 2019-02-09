@@ -18,7 +18,15 @@ require(tidyverse)
 
 load("data/clean/dataset.rda")
 
-write.csv(df.master,"data/clean/dataset.csv",row.names = FALSE)
+# write.csv(df.master,"data/clean/dataset.csv",row.names = FALSE)
+
+fix.effect.only <-lm(log(price) ~ factor(month) + factor(mkt_name) -1,data=df.master)
+summary(fix.effect.only)
+
+
+fix.effect.only <-lm(log(price) ~ annual.fra. + factor(month) + factor(mkt_name) -1,data=df.master)
+summary(fix.effect.only)
+
 
 df.master = df.master %>% mutate(import_distance = ifelse(distance_km==0, yes=0,no=mznetimports/distance_km)) 
 df.master = df.master %>% mutate(import_traveltime = ifelse(travel_hours==0, yes=0,no=mznetimports/travel_hours)) 
