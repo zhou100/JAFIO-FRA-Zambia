@@ -507,4 +507,5 @@ CFS.summary = CFS.combind %>%
   mutate(dev_share = share-long_run_share)
   
 
+write.csv(CFS.combind,file="data/raw/cfs_combind.csv",row.names = FALSE)
 write.csv(CFS.summary,file="data/clean/cfs_summary.csv",row.names = FALSE)
