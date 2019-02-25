@@ -41,6 +41,10 @@ distance = read.csv("data/clean/mkt_distance.csv")
 
 df.master = full_join(price.leanmonth,distance,by="mkt_name")
 
+# ALL month 
+
+#df.master = full_join(monthly.prices.long,distance,by="mkt_name")
+
 ##################################################################
 ## Join Annual  production and stocks (in the previous year)
 ##################################################################
@@ -183,6 +187,55 @@ df.master["miller"] = ifelse(df.master$count_miller==0,yes = 0, no = 1)
 df.master["weighted_fra_sales"] = df.master$count_miller/51 * df.master$frasalesmt
 
 df.master["frasales_miller"] = df.master$miller * df.master$frasalesmt
+
+
+##################################################################
+# Join  the cfs data 
+##################################################################
+
+cfs_summary = read.csv("data/clean/cfs_summary.csv")
+cfs_summary$DIST = as.character(cfs_summary$DIST)
+
+unique(cfs_summary$DIST)
+
+# impact the price of the next year 
+cfs.df = cfs_summary %>% 
+  mutate (year=year+1) %>% 
+  mutate (mkt_name = DIST) %>% 
+  select(mkt_name,year,dev_prod,dev_share,long_run_share)  
+
+cfs.df$mkt_name[cfs.df$mkt_name=="Kabwe Urban"]="Kabwe"
+cfs.df$mkt_name[cfs.df$mkt_name=="Lusaka urban"]="Lusaka"  
+
+df.master = left_join(df.master,cfs.df,by=c("mkt_name","year"))
+
+unique(df.master$mkt_name)
+# check miss matches due to name
+df.master$mkt_name[is.na(df.master$long_run_share)]
+
+df.master$long_run_share[is.na(df.master$long_run_share)]=0
+df.master$dev_prod[is.na(df.master$long_run_share)]=0
+df.master$dev_share[is.na(df.master$long_run_share)]=0
+
+
+
+###############################
+# create devation from mean variable 
+####################################
+
+
+national.mean= df.master %>% 
+  group_by(year) %>% 
+  summarise(nation_avg = mean(price,na.rm = TRUE)) %>% 
+  mutate(year_c=as.character(year)) %>% 
+  select(-year)
+
+df.master = df.master %>% 
+  mutate(year_c = as.character(year) ) %>%
+  left_join(national.mean,by="year_c") %>%
+  mutate(dev_price_square = (price-nation_avg)^2)
+
+
 ##################################################################
 # Save the data frame for later analysis  
 ##################################################################
