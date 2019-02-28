@@ -29,7 +29,7 @@ unique(monthly.prices.long$mkt_name)
 
 # monthly.prices.long
 
-price.leanmonth = monthly.prices.long %>% dplyr::filter(month<5 & month>0)
+# price.leanmonth = monthly.prices.long %>% dplyr::filter(month<5 & month>0)
 
 
 
@@ -39,11 +39,11 @@ price.leanmonth = monthly.prices.long %>% dplyr::filter(month<5 & month>0)
 
 distance = read.csv("data/clean/mkt_distance.csv")
 
-df.master = full_join(price.leanmonth,distance,by="mkt_name")
+# df.master = full_join(price.leanmonth,distance,by="mkt_name")
 
 # ALL month 
 
-#df.master = full_join(monthly.prices.long,distance,by="mkt_name")
+df.master = full_join(monthly.prices.long,distance,by="mkt_name")
 
 ##################################################################
 ## Join Annual  production and stocks (in the previous year)
@@ -96,6 +96,9 @@ fra.purchase.wide = frapurchase[,7:16] %>% select(-dist)
 fra.long = fra.purchase.wide %>% gather(value= purchase_quantity,key=year,-distname)
 
 # Format the years 
+
+# the year should be the later since most purchase are made in july to Oct of the previous year 
+
 fra.long$year = gsub(fra.long$year, pattern = "fra0203", replacement = 2003)
 fra.long$year = gsub(fra.long$year, pattern = "fra0304", replacement = 2004)
 fra.long$year = gsub(fra.long$year, pattern = "fra0405", replacement = 2005)
@@ -122,7 +125,7 @@ df.master = left_join(df.master,fra.long,by=c("mkt_name","year"))
  
 ##################################################################
 # read in total number of fra purchase, fra sales and netimports the previous year 
-# from nicole mason paper from previous year 
+# from nicole mason paper   
 ##################################################################
 library(haven)
 
@@ -135,29 +138,54 @@ mason0210 = yearmon(mason0210,year_var = "year",month_var = "month")
 
 colnames(mason0210)
 
+
+
+# generate the sum monthly buys and sales 
+
 annual.fra.buy = mason0210 %>% group_by(year) %>% summarise( annual_purchase= sum(frapurchmt)) %>% mutate(year =year +1 )
-
-annual.fra.sale = mason0210 %>% filter(month<7) %>% group_by(year) %>% summarise( annual_sales= sum(frasalesmt)) 
-
+annual.fra.sale = mason0210 %>% group_by(year) %>% summarise( annual_sales= sum(frasalesmt)) 
 annual.import =  mason0210 %>% group_by(year) %>% summarise( annual_import= sum(mznetimports)) %>% mutate(year =year +1 )
+
+# Join data 
 
 df.master = left_join(df.master,annual.fra.buy,by="year")
 df.master = left_join(df.master,annual.fra.sale,by="year")
 df.master = left_join(df.master,annual.import,by="year")
 
 
+# generate monthly shares 
 
+month.share.buy = mason0210 %>% 
+  group_by(month) %>% 
+  summarise( month_average_buy= sum(frapurchmt)) %>% 
+  mutate(month_share_buy=month_average_buy/sum(month_average_buy)) %>%
+  select(-month_average_buy) %>%
+  mutate(month=as.numeric(month))
+
+
+month.share.sale = mason0210 %>% 
+  group_by(month) %>% 
+  summarise( month_average_sale= sum(frasalesmt)) %>% 
+  mutate(month_share_sale=month_average_sale/sum(month_average_sale)) %>%
+  select(-month_average_sale) %>%
+  mutate(month=as.numeric(month))
+
+
+df.master = left_join(df.master,month.share.buy,by="month")
+df.master = left_join(df.master,month.share.sale,by="month")
 
 
 ##################################################################
 # Join the list of commercial millers
 ##################################################################
 
-miller.list = read.csv("data/raw/Millers.csv")
+library(readr)
+
+miller.list = read_csv("data/raw/Millers.csv")
 nrow(miller.list)
 
 miller.list.code = miller.list %>% 
-  mutate(dist_code = as.numeric(as.factor(District))) 
+  mutate(dist_code = as.numeric(as.factor(as.character(District)))) 
 
 miller.number = miller.list.code %>% 
   group_by(dist_code) %>% 
@@ -170,7 +198,35 @@ miller.df =  left_join(miller.list.code,miller.number,by="dist_code") %>%
   distinct()  
 
 
+###########################################
+# Get distance to the nearest miller  
+#############################################
+
+ 
+zam.coord = read_csv("data/raw/road/coord_zam.csv")
+
+zam.coord = zam.coord %>% select(mkt,lat,lon)
+
+miller.coord = zam.coord %>% filter( mkt %in% miller.df$mkt_name )
+ 
+
+library(FastKNN)
+library(geosphere)
+
+# calculate the diistance to nearest miller 
+dist_matrix <- distm(x = zam.coord[,c('lon','lat')],y = miller.coord[,c('lon','lat')],fun=distVincentyEllipsoid)
+
+# 32 rows * 15 columns. for each row, find the column that the value is 0 
+
+
+zam.coord["mill_dist"] = apply(dist_matrix,1,min)
+
+
+miller.dist = zam.coord %>% mutate(mkt_name = mkt) %>% select(mkt_name,mill_dist)
+ 
 # Join the master data set 
+df.master = left_join(df.master,miller.dist,by="mkt_name")
+
 df.master = left_join(df.master,miller.df,by="mkt_name")
 
 # replace na due to missing with 0
@@ -193,7 +249,7 @@ df.master["frasales_miller"] = df.master$miller * df.master$frasalesmt
 # Join  the cfs data 
 ##################################################################
 
-cfs_summary = read.csv("data/clean/cfs_summary.csv")
+cfs_summary = read_csv("data/clean/cfs_summary.csv")
 cfs_summary$DIST = as.character(cfs_summary$DIST)
 
 unique(cfs_summary$DIST)
@@ -202,7 +258,7 @@ unique(cfs_summary$DIST)
 cfs.df = cfs_summary %>% 
   mutate (year=year+1) %>% 
   mutate (mkt_name = DIST) %>% 
-  select(mkt_name,year,dev_prod,dev_share,long_run_share)  
+  select(mkt_name,year,prod_percent,dev_share,long_run_share)  
 
 cfs.df$mkt_name[cfs.df$mkt_name=="Kabwe Urban"]="Kabwe"
 cfs.df$mkt_name[cfs.df$mkt_name=="Lusaka urban"]="Lusaka"  
@@ -214,10 +270,13 @@ unique(df.master$mkt_name)
 df.master$mkt_name[is.na(df.master$long_run_share)]
 
 df.master$long_run_share[is.na(df.master$long_run_share)]=0
-df.master$dev_prod[is.na(df.master$long_run_share)]=0
 df.master$dev_share[is.na(df.master$long_run_share)]=0
 
+# predicted national production 
+df.master = df.master %>% mutate(pred_national_prod = prod_percent * production*1000)
 
+# predicted national deviation 
+df.master = df.master %>% mutate(pred_dev_prod = pred_national_prod*dev_share)
 
 ###############################
 # create devation from mean variable 
@@ -235,8 +294,22 @@ df.master = df.master %>%
   left_join(national.mean,by="year_c") %>%
   mutate(dev_price_square = (price-nation_avg)^2)
 
+df.master$purchase_quantity[is.na(df.master$purchase_quantity)]=0
+df.master$dev_share[is.na(df.master$dev_share)]=0
+df.master$prod_percent[is.na(df.master$prod_percent)]=0
+df.master$pred_national_prod[is.na(df.master$pred_national_prod)]=0
+df.master$pred_dev_prod[is.na(df.master$pred_dev_prod)]=0
+
+
+
+df.master = df.master %>% 
+  mutate(logpurchase = log(purchase_quantity+1))
+
+
+
 
 ##################################################################
 # Save the data frame for later analysis  
 ##################################################################
 save(df.master,file="data/clean/dataset.rda")
+write.csv(df.master,file="data/clean/dataset.csv",row.names = FALSE)

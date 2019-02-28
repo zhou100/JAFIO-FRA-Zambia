@@ -16,23 +16,21 @@ require(tidyverse)
 # weather_i,t-1 + Price_year_average
 
 load("data/clean/dataset.rda")
-df.master = df.master %>% 
-  mutate( IV = dev_prod*long_run_share)  %>%
-  mutate(logpurchase = log(purchase_quantity+1))
 
 attach(df.master)
 
+colnames(df.master)
+ 
 
-
-# Reg 4: price ~ weighted_fra_sales + log(fra_purchase_quantity t-1) + weather vars + trend + i. mkt ( i. year removes all the weather vars effect) 
-
-
-
-price.ols <-lm(price ~  logpurchase+ weighted_fra_sales + maxdays+raincytot +tmean +heatday + year  + factor(mkt_name) -1)
+price.ols <-lm(price ~  logpurchase+   weighted_fra_sales + 
+                 MCHINJI + SAFEX + maxdays+raincytot +tmean +heatday + year+ 
+                 stock_end  + factor(mkt_name) -1 + factor(month))
 summary(price.ols)
 
-dev.ols <-lm(dev_price_square ~logpurchase +  weighted_fra_sales+ maxdays+raincytot +tmean +heatday + year  + factor(mkt_name) -1)
+dev.ols <-lm(dev_price_square ~logpurchase +  weighted_fra_sales + MCHINJI + SAFEX + maxdays+raincytot +tmean +heatday + year  + stock_end + factor(mkt_name) -1+ factor(month))
 summary(dev.ols)
+
+
 
   
 
@@ -43,20 +41,37 @@ summary(dev.ols)
 
  
 # first stage 
+ 
 
-first.stage = lm( logpurchase~IV,data=df.master)
-summary(first.stage)
+# fra_sales ~ monthly share + predict FRA stock
+# + distance_weight + 
+#   expected monthly share * the predicted FRA stocks from last year
+# * distance-weights
 
-
-# install.packages("AER")
-# library(AER)
 require(plm)
 
-iv.price = plm(price ~ logpurchase+ weighted_fra_sales+ maxdays+raincytot +tmean +heatday + year +factor(mkt_name)-1 | . - IV + maxdays+raincytot +tmean +heatday + year  ,model = "fd" , data = df.master)
+iv.price = plm(price ~ 
+              logpurchase+ weighted_fra_sales+ 
+                maxdays+raincytot +tmean +
+                MCHINJI + SAFEX + stock_end + 
+                heatday + year + factor(month)+ factor(mkt_name)-1 | . - IV + 
+                maxdays+raincytot +tmean +
+                MCHINJI + SAFEX + stock_end + 
+                heatday + year + factor(month)+ factor(mkt_name)-1  ,
+              model = "within" , data = df.master)
+
 summary(iv.price)
 
 iv.dev = plm(dev_price_square ~ logpurchase+ weighted_fra_sales+ maxdays+raincytot +tmean +heatday + year+factor(mkt_name)-1 | . - IV + maxdays+raincytot +tmean +heatday ,model="fd"  , data = df.master)
 summary(iv.dev)
+
+
+first.stage = lm( logpurchase~IV + factor(mkt_name) + factor(month),data=df.master)
+summary(first.stage)
+
+ 
+
+
 
 
 ########################################################

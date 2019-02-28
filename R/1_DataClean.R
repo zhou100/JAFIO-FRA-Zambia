@@ -285,7 +285,8 @@ write.csv(zambia_annual,"data/clean/zambia_annual.csv",row.names = FALSE)
 
 
 ###################################
-# Get cfs data  
+# Get cfs/phs data  
+# Raw data too big and not contained in this repo.
 # sum up production by each district 
 ###################################
 library(readr)
@@ -493,19 +494,33 @@ cfs.14.sum = cfs_14 %>%
 ##########################################
 
 CFS.combind = bind_rows(cfs.99.sum,cfs.00.sum,cfs.01.sum,cfs.02.sum,cfs.03.sum,cfs.04.sum,cfs.05.sum,cfs.06.sum,cfs.07.sum,cfs.08.sum,cfs.09.sum,cfs.11.sum,cfs.13.sum,cfs.14.sum)
+write.csv(CFS.combind,file="data/raw/cfs_combind.csv",row.names = FALSE)
 
-CFS.summary = CFS.combind %>% 
+
+# generate predicted year production 
+
+
+library(readr)
+CFS.combind = read_csv("data/raw/cfs_combind.csv")
+
+
+# consider the predicted production at district i in year t 
+# as a percentage of last year's shares 
+#  
+
+CFS.summary = 
+  CFS.combind %>%
+  filter(DIST!=210 & DIST!=504) %>%
   group_by(year) %>% 
+  arrange(DIST,year) %>%
   mutate(SUM= sum(prod,na.rm = TRUE)) %>% 
   mutate(share = prod/SUM) %>%
   ungroup() %>% 
   group_by(DIST) %>%
+  mutate(share.lag = dplyr::lag(share, n = 1, default = NA)) %>%
   mutate(long_run_share = mean(share,na.rm = TRUE)) %>%
-  mutate(long_run_prod = mean(prod,na.rm = TRUE)) %>%
-  ungroup() %>% 
-  mutate(dev_prod = prod-long_run_prod) %>% 
-  mutate(dev_share = share-long_run_share)
-  
+  mutate(dev_share = share-long_run_share) %>% 
+  mutate(prod_percent=dplyr::lag(SUM, n = 1, default = NA)/SUM)
 
-write.csv(CFS.combind,file="data/raw/cfs_combind.csv",row.names = FALSE)
+
 write.csv(CFS.summary,file="data/clean/cfs_summary.csv",row.names = FALSE)
