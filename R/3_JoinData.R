@@ -39,7 +39,8 @@ unique(monthly.prices.long$mkt_name)
 
 distance = read.csv("data/clean/mkt_distance.csv")
 
-# df.master = full_join(price.leanmonth,distance,by="mkt_name")
+# lean month 
+#df.master = full_join(price.leanmonth,distance,by="mkt_name")
 
 # ALL month 
 
@@ -107,6 +108,11 @@ fra.long$year = gsub(fra.long$year, pattern = "fra0607", replacement = 2007)
 fra.long$year = gsub(fra.long$year, pattern = "fra0708", replacement = 2008)
 fra.long$year = gsub(fra.long$year, pattern = "fra0809", replacement = 2009)
 fra.long$year = gsub(fra.long$year, pattern = "fra0910", replacement = 2010)
+
+# Split yearly purchase into monthly 
+
+
+
 
 fra.long$year = as.numeric(fra.long$year)
 
@@ -313,3 +319,5 @@ df.master = df.master %>%
 ##################################################################
 save(df.master,file="data/clean/dataset.rda")
 write.csv(df.master,file="data/clean/dataset.csv",row.names = FALSE)
+
+# write.csv(df.master,file="data/clean/dataset_leanmonth.csv",row.names = FALSE)
