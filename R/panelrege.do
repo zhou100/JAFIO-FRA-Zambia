@@ -2,14 +2,28 @@ set matsize 2000
 set more off
 
  import delimited "C:\Users\Administrator\iCloudDrive\Year5\Research Projects\ZambiaPrice\data\clean\dataset.csv",clear
+
+ 
+*use full_data,clear
  
  encode mkt_name,gen(mkt_code)
+ encode region,gen(region_code)
+ encode province,gen(prov_code)
+   
 gen date_string=date(date,"YMD###")
 
 format date_string %td
 
  xtset date_string mkt_code
 
+ *save full_data.dta,replace
+
+*drop if prod_region==1
+*save prod_subdata.dta,replace
+
+
+*drop if prod_region==0
+*save consumer_subdata.dta,replace
  
 * 1.	First Stage
 *fra_sales ~ monthly share + predict FRA stock + distance_weight + expected monthly share * the predicted FRA stocks from last year * distance-weights
@@ -32,144 +46,76 @@ format date_string %td
 *ii.	stock end + cfs prediction 
 
 
- gen distance_weight =1/(distance_km+1)
- 
- gen weighted_buy_dev = long_run_share * pred_dev_prod * month_share_buy
- gen weighted_buy_dev2 = long_run_share * pred_national_prod * month_share_buy
 
- gen weighted_sale_dev = month_share_sale * pred_national_prod * distance_weight
+ * The IV is expected monthly purchase target( from CFS but not actual purchase)
  
- 
- * ssc install ivreg2
- ivreg2   i.mkt_code i.month , ffirst first
- ivreg2  dev_price_square  maxdays raincytot tmean  safex stock_end heatday  year i.mkt_code i.month (logpurchase weighted_fra_sales = weighed_dev weighted_sale_dev weighted_buy_dev2), ffirst first
+
+ * ssc install ivreg2 
+
 
  
- * 3 IVS
+ 
+ 
+use full_data,clear
 eststo clear
-eststo: xi:  ivreg2  dev_price_square  maxdays raincytot tmean   safex stock_end heatday  year i.mkt_code i.month (logpurchase weighted_fra_sales = weighted_buy_dev weighted_sale_dev weighted_buy_dev2), ffirst first savefirst savefprefix(st1) 
-esttab st1* using dev_1st.xls, replace
-esttab est1 using dev_2nd.xls, replace
 
- eststo clear
-eststo: xi:  ivreg2  price  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (logpurchase weighted_fra_sales = weighted_buy_dev weighted_sale_dev weighted_buy_dev2), ffirst first savefirst savefprefix(st1) 
-esttab st1* using price_1st.xls, replace
-esttab est1 using price_2nd.xls, replace
-
-* Two iv  
+estpost tabstat price price_deviation fra_purchase fra_sales  maxdays raincytot tmean  safex   heatday  buy_iv sell_iv2, by(prod_region) ///
+     statistics(mean sd min max) columns(statistics) listwise
  
-eststo clear
-eststo: xi:  ivreg2  dev_price_square  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (logpurchase weighted_fra_sales = weighed_dev weighted_sale_dev), ffirst first savefirst savefprefix(st2) 
-esttab st2* using dev_1st_2iv.xls, replace
-esttab est1 using dev_2nd_2iv.xls, replace
-
-eststo clear
-eststo: xi:  ivreg2  price  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (logpurchase weighted_fra_sales = weighed_dev weighted_sale_dev), ffirst first savefirst savefprefix(st2) 
-esttab st2* using price_1st_2iv.xls, replace
-esttab est1 using price_2nd_2iv.xls, replace
-
-
-
+ esttab,  noobs nomtitle nonumber ///
+     eqlabels(`e(labels)') varwidth(20)
+ 
+*****************************************************************
+* Price regression table 
+*****************************************************************
 
 * OLS
-
- 
-eststo clear
-eststo: reg price logpurchase weighted_fra_sales  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month  
-esttab est1 using price_OLS.xls, replace
+use full_data,clear
 
 eststo clear
-eststo: reg dev_price_square logpurchase weighted_fra_sales  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month  
-esttab est1 using dev_OLS.xls, replace
+* eststo: xtreg price fra_purchase fra_sales  maxdays raincytot tmean safex stock_end heatday  year i.month i.mkt_code
+eststo: reg price fra_purchase fra_sales  maxdays raincytot tmean  safex   heatday  trend i.month i.mkt_code, vce (cluster prov_code)
+eststo:ivreg2  price  maxdays  raincytot tmean   safex heatday   trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) gmm2s
 
+use prod_subdata,clear
+eststo:ivreg2  price  maxdays  raincytot tmean   safex heatday  trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code)
 
-* One endogenous var (buy)
+use consumer_subdata,clear
+eststo:ivreg2  price  maxdays  raincytot tmean   safex heatday  trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code)
 
-eststo clear
-eststo: xi:  ivreg2  dev_price_square  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (logpurchase  = weighed_dev weighted_sale_dev weighted_buy_dev2), ffirst first savefirst savefprefix(st1_buy) 
-esttab st1_buy* using dev_1st_buy.xls, replace
-esttab est1 using dev_2nd_buy.xls, replace
+esttab est1 est2 est3 est4 using price_reg.rtf, se replace ///
+	keep(fra_purchase fra_sales maxdays raincytot tmean heatday safex  trend )  ///
+	star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) ///
+	stat(N N_clust idstat widstat, fmt(0 0 3 3 ) labels("N" "Cluster" "Underidentification" "Weak identification"))  
+	   
+   
 
- eststo clear
-eststo: xi:  ivreg2  price  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (logpurchase = weighed_dev weighted_sale_dev weighted_buy_dev2), ffirst first savefirst savefprefix(st1) 
-esttab st1* using price_1st.xls, replace
-esttab est1 using price_2nd.xls, replace
-
-* Two iv  
- 
-eststo clear
-eststo: xi:  ivreg2  dev_price_square  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (logpurchase  = weighed_dev weighted_sale_dev), ffirst first savefirst savefprefix(st2) 
-esttab est1 using dev_2nd_2iv.xls, replace
-
-eststo clear
-eststo: xi:  ivreg2  price  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (logpurchase  = weighed_dev weighted_sale_dev), ffirst first savefirst savefprefix(st2) 
- esttab est1 using price_2nd_2iv.xls, replace
-
-
-
-
-
+*****************************************************************
+* Price regression table 
+*****************************************************************
+	   
+	   
 * OLS
+use full_data,clear
+
+eststo clear
+* eststo: xtreg price fra_purchase fra_sales  maxdays raincytot tmean safex stock_end heatday  year i.month i.mkt_code
+eststo: reg price_deviation fra_purchase fra_sales  maxdays raincytot tmean  safex   heatday  trend i.month i.mkt_code, vce (cluster prov_code)
+eststo:ivreg2  price_deviation  maxdays  raincytot tmean   safex heatday   trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) gmm2s
+
+use prod_subdata,clear
+eststo:ivreg2  price_deviation  maxdays  raincytot tmean   safex heatday  trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code)
+
+use consumer_subdata,clear
+eststo:ivreg2  price_deviation  maxdays  raincytot tmean   safex heatday  trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code)
+
+esttab est1 est2 est3 est4 using dev_reg.rtf, se replace ///
+	keep(fra_purchase fra_sales maxdays raincytot tmean heatday safex  trend )  ///
+	star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) ///
+	stat(N N_clust idstat widstat, fmt(0 0 3 3 ) labels("N" "Cluster" "Underidentification" "Weak identification"))  
+	    
 
  
-eststo clear
-eststo: reg  logpurchase  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month  
-esttab est1 using price_OLS.xls, replace
-
-eststo clear
-eststo: reg dev_price_square logpurchase  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month  
-esttab est1 using dev_OLS.xls, replace
-
-
-
-
-* One endogenous var (sale)
-
-eststo clear
-eststo: xi:  ivreg2  dev_price_square  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (weighted_fra_sales  = weighed_dev weighted_sale_dev weighted_buy_dev2), ffirst first savefirst savefprefix(st1_buy) 
-esttab st1_buy* using dev_1st_buy.xls, replace
-esttab est1 using dev_2nd_buy.xls, replace
-
- eststo clear
-eststo: xi:  ivreg2  price  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (weighted_fra_sales = weighed_dev weighted_sale_dev weighted_buy_dev2), ffirst first savefirst savefprefix(st1) 
-esttab st1* using price_1st.xls, replace
-esttab est1 using price_2nd.xls, replace
-
-* Two iv  
  
-eststo clear
-eststo: xi:  ivreg2  dev_price_square  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (weighted_fra_sales  = weighed_dev weighted_sale_dev), ffirst first savefirst savefprefix(st2) 
-esttab est1 using dev_2nd_2iv.xls, replace
 
-eststo clear
-eststo: xi:  ivreg2  price  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month (weighted_fra_sales  = weighed_dev weighted_sale_dev), ffirst first savefirst savefprefix(st2) 
- esttab est1 using price_2nd_2iv.xls, replace
-
-
-
-* OLS
-
- 
-eststo clear
-eststo: reg price weighted_fra_sales  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month  
-esttab est1 using price_OLS.xls, replace
-
-eststo clear
-eststo: reg dev_price_square weighted_fra_sales  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month  
-esttab est1 using dev_OLS.xls, replace
-
-
-
-
-
-
-
-
-eststo clear
-eststo: reg logpurchase   maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month  
-esttab est1 using price_OLS.xls, replace
-
-eststo clear
-eststo: reg weighted_fra_sales  maxdays raincytot tmean mchinji safex stock_end heatday  year i.mkt_code i.month  
-esttab est1 using dev_OLS.xls, replace
 
