@@ -16,14 +16,14 @@ format date_string %td
 
  xtset date_string mkt_code
 
- *save full_data.dta,replace
+* save full_data.dta,replace
 
 *drop if prod_region==1
-*save prod_subdata.dta,replace
+*save consu_subdata.dta,replace
 
 
 *drop if prod_region==0
-*save consumer_subdata.dta,replace
+*save prod_subdata.dta,replace
  
 * 1.	First Stage
 *fra_sales ~ monthly share + predict FRA stock + distance_weight + expected monthly share * the predicted FRA stocks from last year * distance-weights
@@ -54,19 +54,20 @@ format date_string %td
 
 
  
- 
+ *****************************************************************
+* Table 1: Summary statistics
+*****************************************************************
+
  
 use full_data,clear
 eststo clear
 
-estpost tabstat price price_deviation fra_purchase fra_sales  maxdays raincytot tmean  safex   heatday  buy_iv sell_iv2, by(prod_region) ///
+estpost tabstat price price_deviation fra_purchase fra_sales  maxdays raincytot tmean  safex   heatday  buy_iv_dev sell_iv2, by(prod_region) ///
      statistics(mean sd min max) columns(statistics) listwise
  
- esttab,  noobs nomtitle nonumber ///
-     eqlabels(`e(labels)') varwidth(20)
- 
+ esttab 
 *****************************************************************
-* Price regression table 
+* Table 2: Price regression table 
 *****************************************************************
 
 * OLS
@@ -74,19 +75,25 @@ use full_data,clear
 
 eststo clear
 * eststo: xtreg price fra_purchase fra_sales  maxdays raincytot tmean safex stock_end heatday  year i.month i.mkt_code
-eststo: reg price fra_purchase fra_sales  maxdays raincytot tmean  safex   heatday  trend i.month i.mkt_code, vce (cluster prov_code)
-eststo:ivreg2  price  maxdays  raincytot tmean   safex heatday   trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) gmm2s
+eststo: reg price l.price fra_purchase fra_sales  maxdays raincytot tmean  safex   heatday  i.month i.mkt_code, vce (cluster prov_code)
+eststo:ivreg2  price l.price maxdays  raincytot tmean    heatday safex    prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
+eststo:ivreg2  price l.price annual_import maxdays  raincytot tmean    heatday safex    prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
+eststo:ivreg2  price  l.price annual_import i.year safex    prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
 
-use prod_subdata,clear
-eststo:ivreg2  price  maxdays  raincytot tmean   safex heatday  trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code)
 
-use consumer_subdata,clear
-eststo:ivreg2  price  maxdays  raincytot tmean   safex heatday  trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code)
 
 esttab est1 est2 est3 est4 using price_reg.rtf, se replace ///
-	keep(fra_purchase fra_sales maxdays raincytot tmean heatday safex  trend )  ///
+	keep(fra_purchase fra_sales L.price maxdays raincytot tmean heatday safex annual_import  )  ///
 	star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) ///
 	stat(N N_clust idstat widstat, fmt(0 0 3 3 ) labels("N" "Cluster" "Underidentification" "Weak identification"))  
+
+
+*use prod_subdata,clear
+*eststo:ivreg2  price l.price  maxdays  raincytot tmean   safex heatday  trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code)
+
+*use consu_subdata,clear
+*eststo:ivreg2  price   l.price maxdays  raincytot tmean   safex heatday  trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code)
+
 	   
    
 
@@ -100,17 +107,14 @@ use full_data,clear
 
 eststo clear
 * eststo: xtreg price fra_purchase fra_sales  maxdays raincytot tmean safex stock_end heatday  year i.month i.mkt_code
-eststo: reg price_deviation fra_purchase fra_sales  maxdays raincytot tmean  safex   heatday  trend i.month i.mkt_code, vce (cluster prov_code)
-eststo:ivreg2  price_deviation  maxdays  raincytot tmean   safex heatday   trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) gmm2s
+eststo: reg price_deviation l.price_deviation fra_purchase fra_sales  maxdays raincytot tmean  safex   heatday  i.month i.mkt_code, vce (cluster prov_code)
+eststo:ivreg2  price_deviation l.price_deviation maxdays  raincytot tmean    heatday safex    prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
+eststo:ivreg2  price_deviation l.price_deviation annual_import maxdays  raincytot tmean    heatday safex    prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
+eststo:ivreg2  price_deviation  l.price_deviation annual_import i.year safex    prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
 
-use prod_subdata,clear
-eststo:ivreg2  price_deviation  maxdays  raincytot tmean   safex heatday  trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code)
-
-use consumer_subdata,clear
-eststo:ivreg2  price_deviation  maxdays  raincytot tmean   safex heatday  trend  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code)
 
 esttab est1 est2 est3 est4 using dev_reg.rtf, se replace ///
-	keep(fra_purchase fra_sales maxdays raincytot tmean heatday safex  trend )  ///
+	keep(fra_purchase fra_sales L.price_deviation maxdays raincytot tmean heatday safex )  ///
 	star(* 0.10 ** 0.05 *** 0.01) b(3) se(3) ///
 	stat(N N_clust idstat widstat, fmt(0 0 3 3 ) labels("N" "Cluster" "Underidentification" "Weak identification"))  
 	    

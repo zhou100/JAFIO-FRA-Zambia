@@ -160,6 +160,8 @@ month.share.buy = mason0210 %>%
 library(readxl)
 frapurchase <- read_excel("data/raw/FRA/data_for_fra_purchases_0203-0910.xls")
 
+mean(rowMeans(frapurchase[,4:11]))
+
 frapurchase = frapurchase %>% select(-DISTRICT,-DIS_NAME,-Prov,-provname,-dist)
 head(frapurchase)
 
@@ -466,7 +468,7 @@ df.master$pred_dist_prod_dev[is.na(df.master$pred_dist_prod_dev)]
 ################################################################
 
 df.master = df.master %>% 
-  mutate(buy_iv = pred_dist_prod_dev) %>% 
+  mutate(buy_iv = pred_dist_prod) %>% 
   mutate(buy_iv_dev = pred_dist_prod_dev) %>% 
   mutate(sell_iv = month_share_sale * pred_national_prod*long_run_share/(mill_dist_km)) %>%
   mutate(sell_iv2 = month_share_sale * pred_national_prod*long_run_share/(mill_dist_km2)) 
@@ -477,7 +479,7 @@ df.master$sell_iv[is.na(df.master$sell_iv)] = 0
 
 
 df.master = df.master %>% 
-  mutate( prod_region=ifelse(PROVINCE =="CENTRAL" | PROVINCE =="EASTERN" | PROVINCE =="SOUTHERN" | PROVINCE =="LUAPULA",1,0)) 
+  mutate( prod_region=ifelse(PROVINCE =="CENTRAL" | PROVINCE =="EASTERN" | PROVINCE =="SOUTHERN",1,0)) 
   
 df.master = df.master %>%
   mutate( fra_purchase = monthly_buy ) %>%
@@ -486,8 +488,14 @@ df.master = df.master %>%
   mutate(  trend = year - 2003) 
   
 
+######################################
 
+############################
+mkt.name.df = df.master %>% select(prod_region,mkt_name) %>% distinct()
 
+mkt.map = zam.coord %>% mutate(mkt_name = mkt) %>% left_join(mkt.name.df,by="mkt_name")
+
+write.csv(mkt.map,file="data/clean/map_coord.csv")
 ##################################################################
 # Save the data frame for later analysis  
 ##################################################################
@@ -495,3 +503,6 @@ save(df.master,file="data/clean/dataset.rda")
 write.csv(df.master,file="data/clean/dataset.csv",row.names = FALSE)
 
 # write.csv(df.master,file="data/clean/dataset_leanmonth.csv",row.names = FALSE)
+
+month.shares.df= left_join(month.share.buy,month.share.sale,by="month")
+write.csv(month.shares.df,"data/clean/month_shares.csv",row.names = FALSE)

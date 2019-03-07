@@ -119,5 +119,15 @@ df.master %>% ggplot(aes(x=yearmon,y=log(price+1))) +   geom_point(aes(colour = 
 df.master %>% ggplot(aes(x=year)) +   geom_point(aes(y=log(annual_purchase/100),colour="FRA_buy")) +  geom_point(aes(y=log(production),color="production")) + theme_classic()
 
 
+library(readr)
+month_shares <- read_csv("data/clean/month_shares.csv")
 
+month_shares$month_abb = as.character(month_shares$month)
 
+month_shares %>% ggplot() + 
+  geom_path(aes(x=month, size=2,y=month_share_buy,color="FRA Purchase monthly shares")) + 
+  geom_path(aes(x=month, size=2,y=month_share_sale,color="FRA Sales monthly shares")) + 
+  theme_classic()+
+  labs(title ="Share by month", x = "Month", y = "Share") +
+  theme(text = element_text(size=20),
+        axis.text.x = element_text(angle=90, hjust=1)) 
