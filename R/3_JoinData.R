@@ -278,9 +278,10 @@ miller.number = miller.list.code %>%
 miller.df =  left_join(miller.list.code,miller.number,by="dist_code") %>% 
   mutate(mkt_name=District) %>% 
   select(mkt_name,count_miller) %>% 
-  distinct()  
+  distinct() %>%
+  arrange(mkt_name)
 
-
+write.csv(miller.df,"data/clean/miller_by_district.csv",row.names = FALSE)
 ###########################################
 # Get distance to the nearest miller  
 #############################################
