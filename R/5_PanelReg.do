@@ -1,11 +1,14 @@
 set matsize 2000
 set more off
 
- import delimited "C:\Users\Administrator\iCloudDrive\Year5\Research Projects\ZambiaPrice\data\clean\dataset.csv",clear
+  * ssc install ivreg2 
 
+
+* import delimited "C:\Users\Administrator\iCloudDrive\Year5\Research Projects\ZambiaPrice\data\clean\dataset.csv",clear
+
+ import delimited "/Users/yujunzhou/Box Sync/Research/ZambiaPrice/data/clean/dataset.csv", encoding(ISO-8859-1) clear
  
-*use full_data,clear
- 
+
  encode mkt_name,gen(mkt_code)
  encode region,gen(region_code)
  encode province,gen(prov_code)
@@ -123,6 +126,41 @@ esttab est1 est2 est3 est4 using dev_reg.rtf, se replace ///
 
 
 
+*****************************************************************
+* Table 4:  ancilliary regression using annual data 
+*****************************************************************
+	   
+use full_data,clear
+	   
+tab year, summarize(raincytot)	   
+tab year, summarize(maxdays)	   
+
+* interactions between FRA + weather
+
+gen inter_fra_buy = raincytot * fra_purchase
+gen inter_fra_sale = raincytot * fra_sale
+
+* expect years with more rain,  the sales to have a smaller effect on the price 
+* so less negative or more postive than a regular year	
+
+
+* expect years with more rain,  the purchase to have a larger effect (maybe) on the price 
+* so more postive than a regular year	
+
+
+
+eststo: reg price   inter_fra_sale fra_purchase  fra_sales  maxdays raincytot tmean  safex   heatday  i.month i.mkt_code, vce (cluster prov_code)
+eststo: reg price_deviation   inter_fra_sale fra_purchase  fra_sales  maxdays raincytot tmean  safex   heatday  i.month i.mkt_code, vce (cluster prov_code)
+
+
+eststo:ivreg2  price inter_fra_sale maxdays  raincytot tmean    heatday safex  annual_import  prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
+
+
+
+ * past purchases - sales over the past year(s) 
+ 
+ 
+ 
  
 *****************************************************************
 * Table A1: Price regression table 
@@ -130,6 +168,10 @@ esttab est1 est2 est3 est4 using dev_reg.rtf, se replace ///
 
 * OLS
 use full_data,clear
+
+
+* 
+
 
 eststo clear
 * eststo: xtreg price fra_purchase fra_sales  maxdays raincytot tmean safex stock_end heatday  year i.month i.mkt_code
@@ -149,3 +191,4 @@ esttab   st2* st3* st4* using first_stage.rtf, se replace ///
  
 
 
+ 
