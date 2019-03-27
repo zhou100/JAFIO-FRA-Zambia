@@ -189,6 +189,10 @@ esttab   st2* st3* st4* using first_stage.rtf, se replace ///
 
  
  
+Robustness checks: 
+  1.	Local vs country average vs production region
+2.	Annual regressions: CV and sd, Interaction between FRA and weather 
+3.	 Split sample by region, by transport cost 
 
 
  
