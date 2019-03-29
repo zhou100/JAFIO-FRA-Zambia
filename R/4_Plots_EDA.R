@@ -146,17 +146,129 @@ write.csv(iv.map, "data/clean/iv_map.csv",row.names = FALSE)
 # Figure 6. Historical and Simulated Prices
 ##################################################################
 
+# Consider the case of two markets:
+# 1. lots of FRA purchase but no millers around : Mbala
+
+# 2. has millers  and rarely any purchase: Lusaka
+
+# the simulated price= real price - average marginal effect * purchase/sales
+
+# real price 
+
+# Subset of data and create simulated price 
+simu.figure = df.master %>% 
+  dplyr::filter(mkt_name=="Lusaka"|mkt_name=="Mbala") %>%
+  dplyr::select(date,mkt_name,price,fra_purchase,fra_sales,mill_dist_km2) %>%
+  dplyr::mutate(simu_price= price - 0.028*fra_purchase + 4.684*fra_sales ) %>%
+  dplyr::mutate(date=as.Date(date))
+
+# 
+Lusaka.price =
+simu.figure %>% 
+  filter(mkt_name=="Lusaka") %>%
+  mutate( Simulated_Price= simu_price) %>%
+  mutate(Price =price ) %>%
+  dplyr::select(date,Price,Simulated_Price) %>%
+  gather(-date,key=group,value=price) %>%
+  arrange(desc(group))
+
+mbala.price =
+  simu.figure %>% 
+  filter(mkt_name=="Mbala") %>%
+  mutate( Simulated_Price= simu_price) %>%
+  mutate(Price =price ) %>%
+  dplyr::select(date,Price,Simulated_Price) %>%
+  gather(-date,key=group,value=price) %>%
+  arrange(desc(group))
+
+# Generate figure 
+ggplot(Lusaka.price, aes(date,price,group = group,colour = group))+
+  geom_line(size = 2)  +
+  theme_classic() +
+  scale_x_date(date_breaks = "8 month", date_labels =  "%b %Y") +
+  labs(x = NULL, y = NULL) +
+  theme(text = element_text(size=15))
+
+ggplot(mbala.price, aes(date,price,group = group,colour = group))+
+  geom_line(size = 2)  +
+  theme_classic() +
+  scale_x_date(date_breaks = "8 month", date_labels =  "%b %Y") +
+  labs(x = NULL, y = NULL) +
+  theme(text = element_text(size=15))
+
+
+ 
+
+
+
 
 
 ##################################################################
-# Figure 5. Cointegration between markets (rural)
+# Table A1. Cointegration between markets (rural and urban)
 ##################################################################
+library("tseries")
+
+lusaka.timeseries= df.master %>% 
+  dplyr::filter(mkt_name=="Lusaka") %>%
+  mutate(lusaka_price = price) %>%
+  select(date,lusaka_price)
+
+
+#The Dickey-Fuller test statistic is very low, 
+#providing a low p-value and hence evidence to reject the null hypothesis of 
+# a unit root and thus evidence we have a stationary series 
+
+adf.test(lusaka.timeseries$lusaka_price)
+mbala.timeseries= df.master %>% 
+  dplyr::filter(mkt_name=="Mbala") %>%
+  mutate(mbala_price = price) %>%
+  select(date,mbala_price)
+adf.test(mbala.timeseries$mbala_price)
+
+
+kaoma.timeseries= df.master %>% 
+  dplyr::filter(mkt_name=="Kaoma") %>%
+  mutate(kaoma_price = price) %>%
+  select(date,kaoma_price)
+
+adf.test(kaoma.timeseries$kaoma_price)
 
 
 
+Solwezi.timeseries= df.master %>% 
+  dplyr::filter(mkt_name=="Solwezi") %>%
+  mutate(Solwezi_price = price) %>%
+  select(date,Solwezi_price)
+
+adf.test(Solwezi.timeseries$Solwezi_price)
+
+Kawambwa.timeseries= df.master %>% 
+  dplyr::filter(mkt_name=="Kawambwa") %>%
+  mutate(Kawambwa_price = price) %>%
+  select(date,Kawambwa_price)
+
+adf.test(Kawambwa.timeseries$Kawambwa_price)
+
+Senanga.timeseries= df.master %>% 
+  dplyr::filter(mkt_name=="Senanga") %>%
+  mutate(Senanga_price = price) %>%
+  select(date,Senanga_price)
+
+adf.test(Senanga.timeseries$Senanga_price)
+
+price.df  = left_join(lusaka.timeseries,mbala.timeseries) 
+price.df  = left_join(price.df,kaoma.timeseries)
+price.df  = left_join(price.df,Solwezi.timeseries) 
+price.df  = left_join(price.df,Senanga.timeseries) 
+price.df  = left_join(price.df,Kawambwa.timeseries) %>% select(-date)
 
 
+library("urca")
+jotest=ca.jo(price.df , type="trace", K=2, ecdet="none", spec="longrun")
 
+summary(jotest)
+
+ 
 ##################################################################
 # Exploration data analysis (omitted)
 ##################################################################

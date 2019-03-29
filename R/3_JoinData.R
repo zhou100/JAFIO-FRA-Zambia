@@ -490,13 +490,26 @@ df.master = df.master %>%
   
 
 ######################################
-
+# market coordinates data 
 ############################
 mkt.name.df = df.master %>% select(prod_region,mkt_name) %>% distinct()
 
 mkt.map = zam.coord %>% mutate(mkt_name = mkt) %>% left_join(mkt.name.df,by="mkt_name")
 
 write.csv(mkt.map,file="data/clean/map_coord.csv")
+
+
+
+##################################################################
+# rescale data 
+########################################################
+
+
+df.master$annual_import = df.master$annual_import/1000
+df.master$buy_iv = df.master$buy_iv/1000
+df.master$sell_iv2 = df.master$sell_iv2/1000
+
+
 ##################################################################
 # Save the data frame for later analysis  
 ##################################################################
@@ -507,3 +520,76 @@ write.csv(df.master,file="data/clean/dataset.csv",row.names = FALSE)
 
 month.shares.df= left_join(month.share.buy,month.share.sale,by="month")
 write.csv(month.shares.df,"data/clean/month_shares.csv",row.names = FALSE)
+
+
+
+##################################################################
+# generate annual data: mean, CV and sd
+# reg on the sum of 
+##################################################################
+
+load(file="data/clean/dataset.rda")
+
+
+annual.mean = df.master %>% 
+  group_by(year,mkt_name,PROVINCE,REGION) %>%
+  summarise( price_mean = mean(price) )
+
+annual.sd = df.master %>% 
+  group_by(year,mkt_name,PROVINCE,REGION) %>%
+  summarise( price_sd = sd(price) )
+
+annual.weather = df.master %>% 
+  group_by(year,mkt_name,PROVINCE,REGION) %>%
+  select(raincytot,tmean,day1rain,maxdays,heatday,annual_import) %>%
+  distinct()
+  
+
+annual.fra = df.master %>% 
+  group_by(year,mkt_name,PROVINCE,REGION) %>%
+  select(fra_purchase,fra_sales,buy_iv,sell_iv2) %>%
+  summarise_all(sum)
+
+
+annual.data = left_join(annual.mean,annual.sd)
+annual.data  = left_join(annual.data,annual.weather)
+annual.data  = left_join(annual.data,annual.fra)
+
+ 
+annual.data = annual.data %>%
+  mutate(price_cv = price_sd/price_mean ) 
+  
+write.csv(annual.data,"data/clean/annual.csv",row.names = FALSE)
+
+
+
+
+##################################################################
+# generate country average weather and production region weather
+##################################################################
+
+load(file="data/clean/dataset.rda")
+
+# country avearage
+country.weather = df.master %>% 
+  group_by(year) %>%
+  select( maxdays  ,raincytot, day1rain,tmean  ,  heatday   )  %>%
+  summarise_all(mean)
+
+colnames(country.weather) = c("year","na_maxdays","na_rain","na_day1rain" ,"na_tmean","na_heatday")
+
+# prod average  
+prod.weather = df.master %>% 
+  filter(prod_region==1) %>%
+  group_by(year) %>%
+  select( maxdays  ,raincytot, day1rain,tmean  ,  heatday   )  %>%
+  summarise_all(mean)
+
+colnames(prod.weather) = c("year","prod_maxdays","prod_rain","prod_day1rain","prod_tmean","prod_heatday")
+
+
+weather.check = left_join(country.weather,prod.weather)
+df.check = left_join(df.master,weather.check,by="year")
+
+write.csv(df.check,file="data/clean/data_check.csv",row.names = FALSE)
+
