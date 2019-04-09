@@ -156,10 +156,15 @@ write.csv(iv.map, "data/clean/iv_map.csv",row.names = FALSE)
 # real price 
 
 # Subset of data and create simulated price 
+
+load(file="data/clean/dataset.rda")
+
+
 simu.figure = df.master %>% 
   dplyr::filter(mkt_name=="Lusaka"|mkt_name=="Mbala") %>%
-  dplyr::select(date,mkt_name,price,fra_purchase,fra_sales,mill_dist_km2) %>%
+  dplyr::select(date,mkt_name,price,fra_purchase,fra_sales,mill_dist_km2,SAFEX_adj) %>%
   dplyr::mutate(simu_price= price - 0.028*fra_purchase + 4.684*fra_sales ) %>%
+  dplyr::mutate(simu_price = if_else( SAFEX_adj < simu_price & simu_price >price ,SAFEX_adj, simu_price) ) %>%
   dplyr::mutate(date=as.Date(date))
 
 # 
