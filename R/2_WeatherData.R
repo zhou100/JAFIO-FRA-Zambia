@@ -12,7 +12,7 @@ source("R/functions/Yearmon.R")
 # read in weather data 
 ##################################################################
 
-load("data/clean/weather/rain_9016.rda")
+load("data/raw/weather/rain_9016.rda")
 
 
 
@@ -97,8 +97,8 @@ rain.cytot =
 #### generate mean temperature in the growing season   
 #################################################################################
  
- load("data/clean/weather/tmin_9016.rda")
- load("data/clean/weather/tmax_9016.rda")
+ load("data/raw/weather/tmin_9016.rda")
+ load("data/raw/weather/tmax_9016.rda")
  
 ##########################################################
 ## create mean temp variable  
