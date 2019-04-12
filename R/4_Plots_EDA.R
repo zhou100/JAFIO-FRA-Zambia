@@ -163,8 +163,8 @@ load(file="data/clean/dataset.rda")
 simu.figure = df.master %>% 
   dplyr::filter(mkt_name=="Lusaka"|mkt_name=="Mbala") %>%
   dplyr::select(date,mkt_name,price,fra_purchase,fra_sales,mill_dist_km2,SAFEX_adj) %>%
-  dplyr::mutate(simu_price= price - 0.028*fra_purchase + 4.684*fra_sales ) %>%
-  dplyr::mutate(simu_price = if_else( SAFEX_adj < simu_price & simu_price >price ,SAFEX_adj, simu_price) ) %>%
+  dplyr::mutate(simu_price= price - 0.031*fra_purchase + 7.908*fra_sales ) %>%
+  dplyr::mutate(simu_price = if_else( SAFEX_adj < simu_price & simu_price >price,SAFEX_adj, simu_price) ) %>%
   dplyr::mutate(date=as.Date(date))
 
 # 
@@ -173,8 +173,8 @@ simu.figure %>%
   filter(mkt_name=="Lusaka") %>%
   mutate( Simulated_Price= simu_price) %>%
   mutate(Price =price ) %>%
-  dplyr::select(date,Price,Simulated_Price) %>%
-  gather(-date,key=group,value=price) %>%
+  dplyr::select(date,Price,Simulated_Price, fra_sales) %>%
+  gather(-date,-fra_sales,key=group,value=price) %>%
   arrange(desc(group))
 
 mbala.price =
@@ -187,12 +187,19 @@ mbala.price =
   arrange(desc(group))
 
 # Generate figure 
-ggplot(Lusaka.price, aes(date,price,group = group,colour = group))+
-  geom_line(size = 2)  +
+
+
+ggplot(Lusaka.price)+
+  geom_line(size = 2,aes(date,price,group = group,colour = group))  +
   theme_classic() +
   scale_x_date(date_breaks = "8 month", date_labels =  "%b %Y") +
+  # scale_y_continuous(sec.axis = sec_axis(~./2)) + 
   labs(x = NULL, y = NULL) +
   theme(text = element_text(size=15))
+
+ 
+
+   
 
 ggplot(mbala.price, aes(date,price,group = group,colour = group))+
   geom_line(size = 2)  +

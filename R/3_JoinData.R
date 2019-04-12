@@ -573,23 +573,23 @@ load(file="data/clean/dataset.rda")
 # country avearage
 country.weather = df.master %>% 
   group_by(year) %>%
-  select( maxdays  ,raincytot, day1rain,tmean  ,  heatday   )  %>%
+  select( maxdays  ,raincytot, day1rain,tmean  ,gdd,  heatday   )  %>%
   summarise_all(mean)
 
-colnames(country.weather) = c("year","na_maxdays","na_rain","na_day1rain" ,"na_tmean","na_heatday")
+colnames(country.weather) = c("year","na_maxdays","na_rain","na_day1rain" ,"na_tmean","na_gdd","na_heatday")
 
 # prod average  
 prod.weather = df.master %>% 
   filter(prod_region==1) %>%
   group_by(year) %>%
-  select( maxdays  ,raincytot, day1rain,tmean  ,  heatday   )  %>%
+  select( maxdays  ,raincytot, day1rain,tmean  , gdd, heatday   )  %>%
   summarise_all(mean)
 
-colnames(prod.weather) = c("year","prod_maxdays","prod_rain","prod_day1rain","prod_tmean","prod_heatday")
+colnames(prod.weather) = c("year","prod_maxdays","prod_rain","prod_day1rain","prod_tmean","prod_gdd","prod_heatday")
 
 
 weather.check = left_join(country.weather,prod.weather)
-df.check = left_join(df.master,weather.check,by="year")
+df.master = left_join(df.master,weather.check,by="year")
 
-write.csv(df.check,file="data/clean/data_check.csv",row.names = FALSE)
+write.csv(df.master,file="data/clean/dataset.csv",row.names = FALSE)
 
