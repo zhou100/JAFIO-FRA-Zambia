@@ -17,8 +17,6 @@ load("data/raw/weather/rain_9016.rda")
 
 
 rain0208 = extracted.prec %>% dplyr::filter(date>"2001-12-30" & date<"2009-01-01")
-tmin0208 = extracted.tmin %>% dplyr::filter(date>"2001-12-30" & date<"2009-01-01")
-tmax0208 = extracted.tmax %>% dplyr::filter(date>"2001-12-30" & date<"2009-01-01")
 
 class(rain0208$date)
 
@@ -83,6 +81,7 @@ maxdaysnorain  =
  
 rain.cytot = 
    rain.zambia.cropyear %>%
+   mutate(month = as.numeric(month)) %>%
   dplyr::group_by(cropyear) %>%
   dplyr::arrange(date) %>%
   dplyr::select(-date,cropyear,-year,-month) %>%
@@ -99,6 +98,10 @@ rain.cytot =
  
  load("data/raw/weather/tmin_9016.rda")
  load("data/raw/weather/tmax_9016.rda")
+ 
+ tmin0208 = extracted.tmin %>% dplyr::filter(date>"2001-12-30" & date<"2009-01-01")
+ tmax0208 = extracted.tmax %>% dplyr::filter(date>"2001-12-30" & date<"2009-01-01")
+ 
  
 ##########################################################
 ## create mean temp variable  
@@ -168,7 +171,7 @@ heatday = tmean %>%
 
 source("R/functions/WeatherTranspose.R")
 
-WeatherTranspose(day1rain)
+# WeatherTranspose(day1rain)
 
 weathervars = list(day1rain,maxdaysnorain,rain.cytot,tmean.cropyear,gdd,heatday)
 weathervars.transpose= lapply(weathervars, WeatherTranspose)

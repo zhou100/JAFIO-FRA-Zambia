@@ -81,12 +81,16 @@ write.csv( fra_buy_map,"data/clean/fra_map.csv" ,row.names = FALSE)
 ##################################################################
 monthly.prices = read.csv("data/clean/monthly_price.csv")
 
+
+
 month.plot  = monthly.prices[1:37] %>% 
   dplyr::select(-date,-year,-SAFEX,-SAFEX_adj) %>%
   group_by(month) %>% 
   summarise_all(mean) %>%
   mutate(lean =if_else( month<4 & month>0|month==12 ,1,0) ) %>%
   mutate(harv =if_else( month<11 & month>6,1,0) )
+
+
 
 # Average Price in lean month 
 month.lean = month.plot %>%
@@ -97,6 +101,13 @@ month.lean = month.plot %>%
   
 lean.map = as.data.frame(t(month.lean)) %>% tibble::rownames_to_column()
 colnames(lean.map)=c("dist","lean_price")
+
+
+month.lean.lusaka = month.lean %>% dplyr::select(Lusaka) 
+month.lean.chipata = month.lean %>% dplyr::select(Chipata) 
+
+
+
 
 # Average Price in harvest month 
 month.harv = month.plot %>%
@@ -110,6 +121,10 @@ harv.map = as.data.frame(t(month.harv)) %>% tibble::rownames_to_column()
 colnames(harv.map)=c("dist","harv_price")
 
 price.map = left_join(harv.map,lean.map)
+
+month.harv.lusaka = month.harv %>% dplyr::select(Lusaka) 
+month.harv.chipata = month.harv %>% dplyr::select(Chipata) 
+
 
 write.csv(price.map,"data/clean/price_map.csv",row.names = FALSE)
 
@@ -210,11 +225,44 @@ ggplot(mbala.price, aes(date,price,group = group,colour = group))+
 
 
  
+##################################################################
+# Table 5 . Historical and Simulated Prices
+##################################################################
+
+load(file="data/clean/dataset.rda")
 
 
+simu.price = df.master %>% 
+#  dplyr::filter(mkt_name=="Choma"|mkt_name=="Kabwe"|mkt_name=="Solwezi"|mkt_name=="Chipata"|mkt_name=="Lusaka"|mkt_name=="Mbala") %>%
+  dplyr::select(date,mkt_name,price,fra_purchase,fra_sales,mill_dist_km2,SAFEX_adj) %>%
+  dplyr::mutate(simu_price= price - 0.031*fra_purchase + 7.908*fra_sales ) %>%
+  dplyr::mutate(simu_price = if_else( SAFEX_adj < simu_price & simu_price >price,SAFEX_adj, simu_price) ) %>%
+  dplyr::mutate(date=as.Date(date))
 
+price.mean= simu.price %>% 
+  group_by(mkt_name) %>% 
+  summarise_all(funs(mean)) %>% 
+  mutate( mean_price = price) %>%
+  mutate( mean_simu_price = simu_price) %>%
+  dplyr::select(mkt_name,mean_simu_price,mean_price)
 
+price.sd = simu.price %>% 
+  group_by(mkt_name) %>% 
+  summarise_all(funs(sd)) %>% 
+  mutate( mean_price_sd = price) %>%
+  mutate( mean_simu_price_sd = simu_price) %>%
+  dplyr::select(mkt_name,mean_simu_price_sd,mean_price_sd)
 
+price.cv = left_join(price.sd,price.mean,by=c("mkt_name"))
+ 
+
+price.cv.table = price.cv %>% 
+  mutate(price_cv = mean_simu_price_sd/mean_simu_price) %>%
+  mutate(simu_price_cv = mean_price_sd/mean_price) %>%
+  dplyr::select(mkt_name,price_cv,simu_price_cv)
+  
+
+write.csv(price.cv.table,"output/cv.csv",row.names = FALSE)
 ##################################################################
 # Table A1. Cointegration between markets (rural and urban)
 ##################################################################

@@ -4,9 +4,9 @@ set more off
   * ssc install ivreg2 
 
 
-import delimited "C:\Users\Administrator\iCloudDrive\Year5\Research Projects\ZambiaPrice\data\clean\dataset.csv",clear
+import delimited "C:\Users\Administrator\ZambiaPrice\data\clean\dataset.csv",clear
 
- *import delimited "/Users/yujunzhou/Box Sync/Research/ZambiaPrice/data/clean/dataset.csv", encoding(ISO-8859-1) clear
+* import delimited "/Users/yujunzhou/Box Sync/Research/ZambiaPrice/data/clean/dataset.csv", encoding(ISO-8859-1) clear
  
 
  encode mkt_name,gen(mkt_code)
@@ -57,12 +57,13 @@ estpost tabstat price price_deviation fra_purchase fra_sales  prod_maxdays prod_
 use full_data,clear
 
 eststo clear
+gen prod_tmeansq = prod_tmean^2
 * eststo: xtreg price fra_purchase fra_sales  maxdays raincytot tmean safex stock_end heatday  year i.month i.mkt_code
 
 * Use production region vars 
 
-eststo: reg price  fra_purchase fra_sales  prod_maxdays prod_rain prod_rainsq   prod_day1rain     prod_tmean   safex  i.month i.mkt_code, vce (cluster prov_code) 
-eststo:ivreg2  price prod_maxdays  prod_rain  prod_rainsq   prod_day1rain     prod_tmean   safex    prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
+eststo: reg price  fra_purchase fra_sales  prod_maxdays prod_rain prod_rainsq   prod_day1rain     prod_tmean prod_tmeansq  safex  i.month i.mkt_code, vce (cluster prov_code) 
+eststo:ivreg2  price prod_maxdays  prod_rain  prod_rainsq   prod_day1rain     prod_tmean prod_tmeansq  safex    prov_code i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
 eststo:ivreg2  price safex   prov_code i.year i.mkt_code i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
 eststo:ivreg2  price  l.price  safex    prov_code i.mkt_code  i.year i.month (fra_purchase fra_sales = buy_iv sell_iv2),  partial( prov_code) 
 
@@ -302,6 +303,24 @@ esttab   st2* st3* st4* using first_stage.rtf, se replace ///
 	stat(N N_clust  r2, fmt(0 0 3 3 ) labels("N" "Cluster"   "r2"))  
 
 
+ *****************************************************************
+* Figure 7 
+*****************************************************************
+import excel "C:\Users\Administrator\ZambiaPrice\data\raw\zambia_annual.xlsx", sheet("Sheet1") firstrow  clear
+
+drop if Time < 1990
  
- 
+
+label variable CornProductio   "Maize Production" 
+label variable CornBeginning   "Maize Beginning Stocks" 
+label variable CornEndingSto   "Maize Ending Stocks" 
+label variable Yieldhgha  "Yield" 
+
+twoway bar CornProductio Time , sort yaxis(1) yscale(range(0) axis(1)) ///
+|| bar CornEndingSto Time , sort yaxis(1) yscale(range(0) axis(1)) ///
+ || bar CornBeginning Time , sort yaxis(1) yscale(range(0) axis(1)) ///
+||  line  Yieldhgha Time, yaxis(2) yscale(range(0) axis(2))  
+///
+
+graph export "C:\Users\Administrator\ZambiaPrice\output\graph\figure7.eps", as(eps) preview(on) replace
 
