@@ -1,4 +1,6 @@
-## Effects of Stock holding policy on Maize Prices: Evidence from Zambia
+## Data and Code for replication 
+
+### Effects of Stock holding policy on Maize Prices: Evidence from Zambia
 
 Yujun Zhou, Kathy Baylis
 
@@ -8,6 +10,7 @@ Department of Agricultural and Consumer Economics at the University of Illinois 
 
 **JEL classifications**: Q11, Q18
 **Keywords**: Public stockholding; Maize marketing board; Price shocks; Zambia
+
 
 
 
