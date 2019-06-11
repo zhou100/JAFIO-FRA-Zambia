@@ -1,6 +1,6 @@
 ## Data and Code for replication 
 
-### Effects of Stock holding policy on Maize Prices: Evidence from Zambia
+### Effects of Stockholding policy on Maize Prices: Evidence from Zambia
 
 Yujun Zhou, Kathy Baylis
 
